@@ -10,7 +10,7 @@ A simple backplane for your containerized applications.
 ```bash
 git clone https://gitlab.com/p3r.one/backplane $HOME/.backplane
 cd $HOME/.backplane
-docker-compose --project backplane up -d
+docker-compose --project-name backplane up -d
 ```
 
 You can now visit the dashboards of both services in your browser:
