@@ -1,0 +1,26 @@
+api:
+  dashboard: true
+  debug: true
+
+entryPoints:
+  http:
+    address: ":80"
+  https:
+    address: ":443"
+
+providers:
+  docker:
+    endpoint: "unix:///var/run/docker.sock"
+    exposedByDefault: false
+  file:
+    filename: /etc/traefik/middlewares.yml
+
+certificatesResolvers:
+  letsencrypt:
+    acme:
+      email: info@peter.saarland
+      storage: /etc/traefik/letsencrypt/acme.json
+      httpChallenge:
+        entryPoint: http
+      dnschallenge:
+        provider: cloudflare
