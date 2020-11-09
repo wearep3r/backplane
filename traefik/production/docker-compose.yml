@@ -25,14 +25,14 @@ services:
       - "--providers.file.directory=/etc/traefik"
       - "--providers.file.watch=true"
       - "--certificatesresolvers.letsencrypt.acme.email=${BACKPLANE_EMAIL_ADDRESS}"
-      - "--certificatesresolvers.letsencrypt.acme.storage=/etc/traefik/acme.json"
+      - "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
       - "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=http"
     ports:
       - "80:80"
       - "443:443"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
-      - "traefik-data:/etc/traefik"
+      - "traefik-data:/letsencrypt"
     security_opt:
       - no-new-privileges:true
     labels:

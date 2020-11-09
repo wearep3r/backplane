@@ -42,3 +42,26 @@ portainer:
     - "traefik.http.services.portainer.loadbalancer.server.port=9000"
     - "traefik.docker.network=backplane"
 ```
+
+## Development
+
+### Dependencies
+
+```bash
+pip install poetry
+poetry shell
+poetry install
+npm i -g standard-version
+```
+
+### Build
+
+```bash
+poetry build
+```
+
+### Publish
+
+```bash
+poetry publish
+```
