@@ -534,6 +534,7 @@ def status(
 
                         for url in urls_matched:
                             status["urls"].append(url)
+                        status["urls"] = list(set(status["urls"]))
 
                 # print(json_data)
                 # json.dumps(container_status.stdout.decode())
@@ -605,7 +606,7 @@ def version_callback(value: bool):
         raise typer.Exit()
 
 
-def checkPrerequisites():
+def checkPrerequisites(ctx):
     # Check for Docker
     if not which("docker"):
         typer.secho("Docker not installed", err=True, fg=typer.colors.RED)
@@ -632,9 +633,19 @@ def checkPrerequisites():
         typer.secho("git not installed", err=True, fg=typer.colors.RED)
         sys.exit(1)
 
+    if not os.path.exists(backplane["active_context_dir"]):
+        if ctx.invoked_subcommand != "install":
+            typer.secho(
+                "config directory missing. Run 'backplane install' first.",
+                err=True,
+                fg=typer.colors.RED,
+            )
+            sys.exit(1)
+
 
 @app.callback()
 def callback(
+    ctx: typer.Context,
     verbosity: bool = typer.Option(False, "--verbosity", "-v", help="Verbosity"),
     debug: bool = typer.Option(False, "--debug", "-d", help="Enable Debugging"),
     environment: str = typer.Option(
@@ -659,7 +670,7 @@ def callback(
     )
     backplane["active_context_dir"] = backplane["default_context_dir"]
 
-    checkPrerequisites()
+    checkPrerequisites(ctx)
 
     if backplane["verbosity"] > 0:
         typer.secho(f"backplane v1.2.0", err=False, fg=typer.colors.BRIGHT_BLACK)
