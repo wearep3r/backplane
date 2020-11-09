@@ -10,6 +10,7 @@ services:
       - "--entryPoints.https.address=:443"
       - "--api=true"
       - "--api.insecure=true"
+      - "--api.dashboard=true"
       - "--serversTransport.insecureSkipVerify=true"
       - "--log=true"
       - "--log.level=DEBUG"
@@ -32,10 +33,12 @@ services:
       - no-new-privileges:true
     labels:
       - "traefik.enable=true"
+      - "traefik.http.middlewares.compress.compress=true"
       - "traefik.http.routers.traefik.entrypoints=http"
       - "traefik.http.routers.traefik.rule=Host(`traefik.${BACKPLANE_DOMAIN}`)"
       - "traefik.http.routers.traefik.service=api@internal"
-      - "traefik.http.routers.traefik.middlewares=compress@file"
+      - "traefik.http.services.api@internal.loadbalancer.server.port=8080"
+      - "traefik.http.routers.traefik.middlewares=compress@docker"
       - "traefik.docker.network=backplane"
     networks:
       - backplane

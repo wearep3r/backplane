@@ -4,3 +4,4 @@ pytest
 anyconfig
 docker
 python-dotenv
+pyyaml
