@@ -26,7 +26,7 @@ backplane_echo_prefix = "- "
 backplane = {}
 
 @app.command()
-def init():
+def install():
   # Check for Docker
   from shutil import which
 
@@ -52,7 +52,7 @@ def init():
   if not os.path.exists(backplane['contexts_dir']):
     typer.secho(f"contexts directory {backplane['contexts_dir']} does not exist", err=True, fg=typer.colors.RED)
     try:
-        os.mkdir(backplane_contexts_dir)
+        os.mkdir(backplane['contexts_dir'])
     except OSError as e:
         typer.secho(f"contexts directory {backplane['contexts_dir']} could not be created: {e}", err=True, fg=typer.colors.RED)
     else:
@@ -79,6 +79,20 @@ def init():
   else:
     typer.secho(f"default context directory {backplane['default_context_dir']} exists", err=False, fg=typer.colors.GREEN)
 
+  # make sure .env file exists
+  if not os.path.exists(backplane['default_context_dir']+"/.env"):
+    typer.secho(f"default config does not exist", err=True, fg=typer.colors.RED)
+    
+    try:
+      subprocess.run("cp .env.example .env",cwd=backplane['default_context_dir'])
+      typer.secho(f"Successfully created default config", err=False, fg=typer.colors.GREEN)
+    except Exception as e:
+      typer.secho(f"Failed to create default config: {e}", err=True, fg=typer.colors.RED)
+      raise typer.Exit(code=1)
+  else:
+    typer.secho(f"default config exists", err=False, fg=typer.colors.GREEN)
+
+
   # Make sure Docker network "backplane" exists
   backplane_network_exists = False
   docker_networks = docker_client.networks.list(names="backplane")
@@ -97,6 +111,42 @@ def init():
       typer.secho(f"Failed to create backplane Docker network: {e}", err=True, fg=typer.colors.RED)
   else:
     typer.secho(f"backplane Docker network exists", err=False, fg=typer.colors.GREEN)
+
+@app.command()
+def uninstall(force: bool = typer.Option(False, "--force", "-f", help="Remove volumes"),):
+  # Stop services
+  stop(remove=force,services="traefik,portainer")
+
+  # Remove backplane
+  try:
+      subprocess.run(["rm", "-rf", backplane['config_dir']])
+  except OSError as e:
+      typer.secho(f"config directory {backplane['config_dir']} could not be removed: {e}", err=True, fg=typer.colors.RED)
+
+  # Remove network
+  docker_networks = docker_client.networks.list(names="backplane")
+  for network in docker_networks:
+    if network.name == "backplane":
+      if "provider" in network.attrs['Labels'].keys():
+        if network.attrs['Labels']['provider'] == "backplane":
+          network.remove()
+
+@app.command()
+def update():
+  typer.secho(f"Updating backplane in {backplane['default_context_dir']} ...", err=False, fg=typer.colors.GREEN)
+  try:
+    backplane_repo = os.getenv("BACKPLANE_REPOSITORY","git@gitlab.com:p3r.one/backplane.git")
+    pull_command = f"git pull origin master"
+    pull = subprocess.call(pull_command, shell=True, cwd=backplane['default_context_dir'])
+
+    typer.secho(f"Successfully updated backplane", err=False, fg=typer.colors.GREEN)
+  except Exception as e:
+    typer.secho(f"Failed to update backplane: {e}", err=True, fg=typer.colors.RED)
+
+    if backplane['verbosity'] > 0:
+        typer.secho(f"{pull_command}", err=False, fg=typer.colors.BRIGHT_BLACK)
+
+    raise typer.Exit(code=1)
 
 def runCommand(
     compose_command: str,
@@ -132,7 +182,7 @@ def start(
   backplane_services = services.split(",")
 
   for service in backplane_services:
-    docker_compose_command = f"docker-compose -f docker-compose.yml -p backplane-{service} up -d"
+    docker_compose_command = f"docker-compose -f docker-compose.yml -p backplane-{service} up -d --remove-orphans"
     project_dir = os.path.join(backplane['active_context_dir'],service,backplane['environment'])
 
     if backplane['verbosity'] > 0:
@@ -143,7 +193,8 @@ def start(
       typer.secho(f"Failed to start {service} in {backplane['active_context_dir']}: {result.output}", err=True, fg=typer.colors.RED)
       raise typer.Exit(code=result)
     else:
-      typer.secho(f"Successfully started {service} in {backplane['active_context_dir']}", err=False, fg=typer.colors.GREEN)
+      if backplane['verbosity'] > 0:
+        typer.secho(f"Successfully started {service} in {backplane['active_context_dir']}", err=False, fg=typer.colors.GREEN)
 
   status(services)
 
@@ -165,18 +216,23 @@ def restart(
       typer.secho(f"Failed to restart {service} in {backplane['active_context_dir']}: {result.stdout}", err=True, fg=typer.colors.RED)
       raise typer.Exit(code=result)
     else:
-      typer.secho(f"Successfully restarted {service} in {backplane['active_context_dir']}", err=False, fg=typer.colors.GREEN)
+      if backplane['verbosity'] > 0:
+        typer.secho(f"Successfully restarted {service} in {backplane['active_context_dir']}", err=False, fg=typer.colors.GREEN)
 
   status(services)
 
 @app.command()
 def stop(
     services: str = typer.Option('traefik,portainer', "--service", "-s", help="Backplane Service"),
+    remove: bool = typer.Option(False,"--remove","-r",help="Remove the service including its volumes")
   ):
   backplane_services = services.split(",")
 
   for service in backplane_services:
-    docker_compose_command = f"docker-compose -f docker-compose.yml -p backplane-{service} stop"
+    if remove:
+      docker_compose_command = f"docker-compose -f docker-compose.yml -p backplane-{service} down -v --rmi all --remove-orphans"
+    else:
+      docker_compose_command = f"docker-compose -f docker-compose.yml -p backplane-{service} stop"
     project_dir = os.path.join(backplane['active_context_dir'],service,backplane['environment'])
     
     if backplane['verbosity'] > 0:
@@ -187,7 +243,8 @@ def stop(
       typer.secho(f"Failed to stop {service} in {backplane['active_context_dir']}: {result.output}", err=True, fg=typer.colors.RED)
       raise typer.Exit(code=result)
     else:
-      typer.secho(f"Successfully stopped {service} in {backplane['active_context_dir']}", err=False, fg=typer.colors.GREEN)
+      if backplane['verbosity'] > 0:
+        typer.secho(f"Successfully stopped {service} in {backplane['active_context_dir']}", err=False, fg=typer.colors.GREEN)
 
   status(services)
 
@@ -263,7 +320,7 @@ def status(
 
       local_indent = backplane_echo_indent*4
       for url in container['urls']:
-        typer.echo(f"{local_indent}{backplane_echo_prefix}{url}")
+        typer.echo(f"{local_indent}{backplane_echo_prefix}http://{url}")
 
     overall_status.append(service_status)
 
