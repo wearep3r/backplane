@@ -24,7 +24,7 @@ services:
       - "--providers.docker.network=backplane"
       - "--providers.file.directory=/etc/traefik"
       - "--providers.file.watch=true"
-      - "--certificatesresolvers.letsencrypt.acme.email=${BACKPLANE_EMAIL_ADDRESS}"
+      - "--certificatesresolvers.letsencrypt.acme.email=${BACKPLANE_MAIL}"
       - "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
       - "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=http"
     ports:

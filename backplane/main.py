@@ -38,16 +38,25 @@ backplane = {}
 
 def getDynamicDomain():
     f = requests.request("GET", "https://ifconfig.me")
-    ip = f.text
+    ip = f.text.replace(".", "-")
 
-    domain = f"{ip}.xip.io"
+    domain = f"{ip}.nip.io"
     return domain
 
 
 @app.command()
 def install(
     domain: str = typer.Option(
-        getDynamicDomain(), "--domain", "-d", help="Backplane Domain"
+        getDynamicDomain(), "--domain", "-d", help="The domain your backplane runs on"
+    ),
+    mail: str = typer.Option(
+        "",
+        "--mail",
+        "-m",
+        help="The mail address used for LetsEncrypt",
+    ),
+    environment: str = typer.Option(
+        "development", "--environment", "-e", help="backplane environment"
     ),
 ):
     error = False
@@ -131,7 +140,7 @@ def install(
 
         try:
             backplane_repo = os.getenv(
-                "BACKPLANE_REPOSITORY", "https://gitlab.com/p3r.one/backplane"
+                "BACKPLANE_REPOSITORY", "https://gitlab.com/p3r.one/backplane.git/"
             )
             clone_command = (
                 f"git clone {backplane_repo} {backplane['default_context_dir']}"
@@ -170,42 +179,42 @@ def install(
         if backplane["verbosity"] > 0:
             typer.secho("default config does not exist", err=True, fg=typer.colors.RED)
 
-        if backplane["environment"] == "development":
-            try:
-                subprocess.run(
-                    ["cp", ".env.example", ".env"],
-                    cwd=backplane["default_context_dir"],
-                )
-                if backplane["verbosity"] > 0:
-                    typer.secho(
-                        "Successfully created default config",
-                        err=False,
-                        fg=typer.colors.GREEN,
-                    )
+        if environment == "development":
+            domain = "127-0-0-1.nip.io"
+            # try:
+            #     subprocess.run(
+            #         ["cp", ".env.example", ".env"],
+            #         cwd=backplane["default_context_dir"],
+            #     )
+            #     if backplane["verbosity"] > 0:
+            #         typer.secho(
+            #             "Successfully created default config",
+            #             err=False,
+            #             fg=typer.colors.GREEN,
+            #         )
 
-            except Exception as e:
-                error = True
-                typer.secho(
-                    f"Failed to create default config: {e}",
-                    err=True,
-                    fg=typer.colors.RED,
+            # except Exception as e:
+            #     error = True
+            #     typer.secho(
+            #         f"Failed to create default config: {e}",
+            #         err=True,
+            #         fg=typer.colors.RED,
+            #     )
+            #     raise typer.Exit(code=1)
+        try:
+            with open(f"{backplane['default_context_dir']}/.env", "w") as writer:
+                writer.write(
+                    f"BACKPLANE_DOMAIN={domain}\nBACKPLANE_ENVIRONMENT={environment}\nBACKPLANE_MAIL={mail}"
                 )
-                raise typer.Exit(code=1)
-        else:
-            try:
-                with open(f"{backplane['default_context_dir']}/.env", "w") as writer:
-                    writer.write(
-                        f"BACKPLANE_DOMAIN={domain}\nBACKPLANE_ENVIRONMENT=production\n"
-                    )
 
-            except Exception as e:
-                error = True
-                typer.secho(
-                    f"Failed to create default config: {e}",
-                    err=True,
-                    fg=typer.colors.RED,
-                )
-                raise typer.Exit(code=1)
+        except Exception as e:
+            error = True
+            typer.secho(
+                f"Failed to create default config: {e}",
+                err=True,
+                fg=typer.colors.RED,
+            )
+            raise typer.Exit(code=1)
     else:
         if backplane["verbosity"] > 0:
             typer.secho("default config exists", err=False, fg=typer.colors.GREEN)
@@ -292,6 +301,8 @@ def uninstall(
                 if network.attrs["Labels"]["provider"] == "backplane":
                     network.remove()
 
+    typer.secho("Successfully uninstalled backplane", err=False, fg=typer.colors.GREEN)
+
 
 @app.command()
 def update():
@@ -371,38 +382,37 @@ def getContainerIDs(service: str):
 @app.command()
 def start(
     services: str = typer.Option(
-        "traefik,portainer", "--service", "-s", help="Backplane Service"
+        "traefik,portainer", "--services", "-s", help="Services to start"
     ),
 ):
     backplane_services = services.split(",")
 
-    with typer.progressbar(backplane_services, label="Starting") as progress:
-        for service in progress:
-            docker_compose_command = f"docker-compose -f docker-compose.yml -p backplane-{service} up -d --remove-orphans"
-            project_dir = os.path.join(
-                backplane["active_context_dir"], service, backplane["environment"]
+    for service in backplane_services:
+        docker_compose_command = f"docker-compose -f docker-compose.yml -p backplane-{service} up -d --remove-orphans"
+        project_dir = os.path.join(
+            backplane["active_context_dir"], service, backplane["environment"]
+        )
+
+        if backplane["verbosity"] > 0:
+            typer.secho(
+                f"{docker_compose_command}", err=False, fg=typer.colors.BRIGHT_BLACK
             )
 
+        result = runCommand(docker_compose_command, project_dir)
+        if result.returncode != 0:
+            typer.secho(
+                f"Failed to start {service} in {backplane['active_context_dir']}: {result.stderr}",
+                err=True,
+                fg=typer.colors.RED,
+            )
+            raise typer.Exit(code=result)
+        else:
             if backplane["verbosity"] > 0:
                 typer.secho(
-                    f"{docker_compose_command}", err=False, fg=typer.colors.BRIGHT_BLACK
+                    f"Successfully started {service} in {backplane['active_context_dir']}",
+                    err=False,
+                    fg=typer.colors.GREEN,
                 )
-
-            result = runCommand(docker_compose_command, project_dir)
-            if result.returncode != 0:
-                typer.secho(
-                    f"Failed to start {service} in {backplane['active_context_dir']}: {result.stderr}",
-                    err=True,
-                    fg=typer.colors.RED,
-                )
-                raise typer.Exit(code=result)
-            else:
-                if backplane["verbosity"] > 0:
-                    typer.secho(
-                        f"Successfully started {service} in {backplane['active_context_dir']}",
-                        err=False,
-                        fg=typer.colors.GREEN,
-                    )
 
     status(services)
 
@@ -410,7 +420,7 @@ def start(
 @app.command()
 def restart(
     services: str = typer.Option(
-        "traefik,portainer", "--service", "-s", help="Backplane Service"
+        "traefik,portainer", "--services", "-s", help="Services to restart"
     ),
 ):
     backplane_services = services.split(",")
@@ -448,11 +458,9 @@ def restart(
 @app.command()
 def stop(
     services: str = typer.Option(
-        "traefik,portainer", "--service", "-s", help="Backplane Service"
+        "traefik,portainer", "--services", "-s", help="Services to stop"
     ),
-    remove: bool = typer.Option(
-        False, "--remove", "-r", help="Remove the service including its volumes"
-    ),
+    remove: bool = typer.Option(False, "--remove", "-r", help="Remove all data"),
 ):
     backplane_services = services.split(",")
 
@@ -494,7 +502,7 @@ def stop(
 @app.command()
 def status(
     services: str = typer.Option(
-        "traefik,portainer", "--service", "-s", help="Backplane Service"
+        "traefik,portainer", "--services", "-s", help="Services to get status for"
     ),
 ):
     backplane_services = services.split(",")
@@ -581,7 +589,7 @@ def status(
 @app.command()
 def logs(
     services: str = typer.Option(
-        "traefik,portainer", "--service", "-s", help="Backplane Service"
+        "traefik,portainer", "--services", "-s", help="Services to get logs for"
     )
 ):
     backplane_services = services.split(",")
@@ -633,10 +641,23 @@ def checkPrerequisites(ctx):
         typer.secho("git not installed", err=True, fg=typer.colors.RED)
         sys.exit(1)
 
-    if not os.path.exists(backplane["active_context_dir"]):
-        if ctx.invoked_subcommand != "install":
+    if not os.path.exists(backplane["config_dir"]):
+        if ctx.invoked_subcommand == "install":
+            pass
+        else:
             typer.secho(
                 "config directory missing. Run 'backplane install' first.",
+                err=True,
+                fg=typer.colors.RED,
+            )
+            sys.exit(1)
+
+    if not os.path.exists(backplane["active_context_dir"]):
+        if ctx.invoked_subcommand == "install":
+            pass
+        else:
+            typer.secho(
+                "active context directory missing. Run 'backplane install' first.",
                 err=True,
                 fg=typer.colors.RED,
             )
@@ -646,17 +667,12 @@ def checkPrerequisites(ctx):
 @app.callback()
 def callback(
     ctx: typer.Context,
-    verbosity: bool = typer.Option(False, "--verbosity", "-v", help="Verbosity"),
-    debug: bool = typer.Option(False, "--debug", "-d", help="Enable Debugging"),
-    environment: str = typer.Option(
-        "development", "--environment", "-e", help="Environment"
-    ),
+    verbosity: bool = typer.Option(False, "--verbose", "-v", help="Verbose"),
     version: Optional[bool] = typer.Option(
         None, "--version", callback=version_callback, is_eager=True
     ),
 ):
-    backplane["verbosity"] = verbosity
-    backplane["environment"] = os.getenv("BACKPLANE_ENVIRONMENT", environment)
+
     backplane["config_dir"] = os.getenv(
         "BACKPLANE_CONIG_DIR", os.path.join(os.getenv("HOME", "~"), ".backplane")
     )
@@ -669,6 +685,13 @@ def callback(
         os.path.join(backplane["contexts_dir"], backplane["active_context"]),
     )
     backplane["active_context_dir"] = backplane["default_context_dir"]
+
+    # Load .env from active context
+    load_dotenv(dotenv_path=f"{backplane['active_context_dir']}/.env")
+
+    backplane["verbosity"] = verbosity
+
+    backplane["environment"] = os.getenv("BACKPLANE_ENVIRONMENT", "development")
 
     checkPrerequisites(ctx)
 
