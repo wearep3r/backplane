@@ -1,0 +1,37 @@
+version: "3.8"
+
+services:
+  runner:
+    image: "backplane-runner"
+    build:
+      context: ../.
+      dockerfile: Dockerfile.test
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Berlin
+      - PUBLIC_KEY=${BACKPLANE_RUNNER_PUBLIC_KEY}
+      - SUDO_ACCESS=true
+      - PASSWORD_ACCESS=false
+      - USER_NAME=git
+      - DOCKER_MODS=linuxserver/mods:universal-docker
+    ports:
+      - "2222:2222"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "runner-repositories:/runner/repositories"
+      - "runner-deployments:/runner/deployments"
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - backplane
+    restart: unless-stopped
+
+volumes:
+  runner-repositories:
+  runner-deployments:
+
+networks:
+  backplane:
+    name: backplane
+    external: true

@@ -126,6 +126,27 @@ networks:
     external: true
 ```
 
+## Use the Runner
+
+### Update your ssh config
+
+Add the following to `~/.ssh/config`. This allows you to reach the runner under `backplane` without further configuration.
+
+```bash
+Host backplane
+    HostName 127.0.0.1
+    User backplane
+    Port 2222
+```
+
+### Update your git remote
+
+Assuming your repository is called `myapp`, this is how you add the **backplane** runner to your git remotes:
+
+```bash
+git remote add origin "git@backplane:myapp"
+```
+
 ## Development
 
 ### Dependencies

@@ -58,8 +58,17 @@ def install(
     environment: str = typer.Option(
         "development", "--environment", "-e", help="backplane environment"
     ),
+    ssh_public_key: str = typer.Option(
+        "", "--ssh-public-key", help="public ssh key to add to the runner"
+    ),
+    ssh_public_key_file: str = typer.Option(
+        f"{os.getenv('HOME')}/.ssh/id_rsa.pub",
+        "--ssh-public-key-file",
+        help="public ssh key file to add to the runner",
+    ),
 ):
     error = False
+    ssh_defaults = 'no-port-forwarding,no-X11-forwarding,no-agent-forwarding,no-pty,command="/usr/local/bin/backplane-ssh"'
 
     # backplane['config_dir']
     if not os.path.exists(backplane["config_dir"]):
@@ -202,10 +211,24 @@ def install(
             #     )
             #     raise typer.Exit(code=1)
         try:
+            # Generate special public format
+            public_key = ""
+            if ssh_public_key != "":
+                public_key = f"{ssh_defaults} {ssh_public_key}"
+            else:
+                with open(ssh_public_key_file, "r") as reader:
+                    pubkey = reader.read().rstrip()
+                    public_key = f"{ssh_defaults} {pubkey}"
+
+            env_file = [
+                f"BACKPLANE_DOMAIN={domain}",
+                f"BACKPLANE_ENVIRONMENT={environment}",
+                f"BACKPLANE_MAIL={mail}",
+                f"BACKPLANE_RUNNER_PUBLIC_KEY='{public_key}'",
+                "",
+            ]
             with open(f"{backplane['default_context_dir']}/.env", "w") as writer:
-                writer.write(
-                    f"BACKPLANE_DOMAIN={domain}\nBACKPLANE_ENVIRONMENT={environment}\nBACKPLANE_MAIL={mail}"
-                )
+                writer.write("\n".join(env_file))
 
         except Exception as e:
             error = True

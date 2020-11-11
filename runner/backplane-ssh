@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+REPO_ROOT="/runner/repositories"
+HOOKS="/runner/hooks"
+# Example git command: git-receive-pack 'apollo-git-test'
+REPO_NAME=$(echo "$SSH_ORIGINAL_COMMAND" | awk '{print $2}' | tr -d "'")
+REPO_PATH="$REPO_ROOT/$REPO_NAME.git"
+
+if [ "$SSH_ORIGINAL_COMMAND" != "" ];
+then
+  if [ ! -d "$REPO_PATH" ]; then
+    git init --bare "$REPO_PATH" 1>&2
+    cp -R "$HOOKS"/* "$REPO_PATH/hooks/"
+    chown -R "$USER:$USER" "$REPO_PATH"
+  fi
+fi
+cd "$REPO_ROOT" && git-shell -c "$SSH_ORIGINAL_COMMAND"

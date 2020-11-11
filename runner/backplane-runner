@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC2143,SC1090
+
+set -eo pipefail
+[[ $DEBUG ]] && set -x
+set -o allexport
+
+FPREFIX="=====>"
+PREFIX="----->"
+INDENT="      "
+
+main() {
+  tail -f /dev/null
+}
+
+deploy() {
+  declare cmd="deploy"
+  [[ "$1" == "$cmd" ]] && shift 1
+
+  echo "$PREFIX Starting deployment"
+  echo "$INDENT Command: $@"
+
+  REPO_PATH="$1"
+  REPO_NAME=$(basename "$REPO_PATH")
+  ENV_FILE="$REPO_PATH/.env"
+  COMPOSE_FILE="$REPO_PATH/docker-compose.yml"
+
+  if [[ -f $ENV_FILE ]]; then
+    set -o allexport
+    source "$ENV_FILE"
+    set +o allexport
+  fi
+
+  if [[ -f $COMPOSE_FILE ]]; then
+    COMPOSE_CONFIG=$(sudo docker-compose config)
+
+    if [[ ! -z $(echo "$COMPOSE_CONFIG" | grep -o "build:*") ]]; then
+      echo "$PREFIX Logging into local registry"
+      echo "$APOLLO_REGISTRY_PASSWORD" | docker login --password-stdin \
+        -u "$APOLLO_REGISTRY_USER" \
+        "$APOLLO_REGISTRY_URL"
+
+      echo "$PREFIX Building $REPO_NAME"
+      cd "$REPO_PATH"
+      docker-compose build --parallel
+
+      echo "$PREFIX Pushing $REPO_NAME"
+      docker-compose push
+    fi
+
+    echo "$PREFIX Deploying $REPO_NAME"
+    sudo docker-compose -f "$COMPOSE_FILE" -p "$REPO_NAME" --env-file ".env"
+
+    HOSTS=$(echo "$COMPOSE_CONFIG" | grep -o ".rule=Host(\`.*")
+    DOMAINS=$(echo "$HOSTS" | grep -o "(?<=\`).*?(?=\`)") # support Traefik v2 host labels
+    PROTOCOL=https                                        # TODO: detect exposed protocols
+
+    echo "$FPREFIX Stack deployed:"
+    for DOMAIN in ${DOMAINS[@]}; do echo "[$REPO_NAME] — $PROTOCOL://$DOMAIN"; done
+    echo
+  else
+    echo "$PREFIX No docker-compose.yml found, exiting"
+    exit 1
+  fi
+}
+
+"$@"
