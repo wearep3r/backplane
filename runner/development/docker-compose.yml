@@ -7,14 +7,7 @@ services:
       context: ../.
       dockerfile: Dockerfile.test
     environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Berlin
-      - PUBLIC_KEY=${BACKPLANE_RUNNER_PUBLIC_KEY}
-      - SUDO_ACCESS=true
-      - PASSWORD_ACCESS=false
-      - USER_NAME=git
-      - DOCKER_MODS=linuxserver/mods:universal-docker
+      - BACKPLANE_RUNNER_PUBLIC_KEY=${BACKPLANE_RUNNER_PUBLIC_KEY}
     ports:
       - "2222:2222"
     volumes:

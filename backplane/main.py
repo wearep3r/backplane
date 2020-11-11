@@ -149,7 +149,7 @@ def install(
 
         try:
             backplane_repo = os.getenv(
-                "BACKPLANE_REPOSITORY", "https://gitlab.com/p3r.one/backplane.git/"
+                "BACKPLANE_REPOSITORY", "https://github.com/wearep3r/backplane.git/"
             )
             clone_command = (
                 f"git clone {backplane_repo} {backplane['default_context_dir']}"
@@ -214,11 +214,11 @@ def install(
             # Generate special public format
             public_key = ""
             if ssh_public_key != "":
-                public_key = f"{ssh_defaults} {ssh_public_key}"
+                public_key = f"{ssh_public_key}"
             else:
                 with open(ssh_public_key_file, "r") as reader:
                     pubkey = reader.read().rstrip()
-                    public_key = f"{ssh_defaults} {pubkey}"
+                    public_key = f"{pubkey}"
 
             env_file = [
                 f"BACKPLANE_DOMAIN={domain}",
