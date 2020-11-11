@@ -1,6 +1,4 @@
 .env
-**/data
-**/config
-**/.user
+**/data**/.user
 dist
 **/*pycache*

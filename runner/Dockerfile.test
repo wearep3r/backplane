@@ -1,7 +1,7 @@
 
 FROM ubuntu:latest
 
-RUN apt update && apt install --no-install-recommends openssh-server sudo python3-pip -y \
+RUN apt update && apt install --no-install-recommends openssh-server git sudo python3-pip -y \
     && pip3 install docker-compose
 
 RUN mkdir -p /runner/repositories /runner/hooks /runner/deployments \
