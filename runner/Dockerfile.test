@@ -7,7 +7,8 @@ RUN apt update && apt install --no-install-recommends openssh-server sudo python
 RUN mkdir -p /runner/repositories /runner/hooks /runner/deployments \
     && chown 1000:1000 /runner -R
 
-RUN useradd -rm -d /runner -s /bin/bash -g root -G sudo -u 1000 git
+RUN useradd -rm -d /runner -s /bin/bash -g root -G sudo -u 1000 git \
+    && echo "git:git" | chpasswd
 
 RUN mkdir -p /runner/.ssh/ \
     && touch /runner/.ssh/known_hosts \
