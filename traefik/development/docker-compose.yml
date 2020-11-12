@@ -35,7 +35,7 @@ services:
     security_opt:
       - no-new-privileges:true
     labels:
-      - "traefik.enable=true"
+      - "backplane.enabled=true"
       - "traefik.http.middlewares.compress.compress=true"
       - "traefik.http.routers.traefik.entrypoints=http"
       - "traefik.http.routers.traefik.rule=Host(`traefik.${BACKPLANE_DOMAIN}`)"
