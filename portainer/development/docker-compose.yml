@@ -15,6 +15,11 @@ services:
       - "portainer-data:/data"
     labels:
       - "backplane.enabled=true"
+      # - "traefik.http.routers.portainer.entrypoints=http"
+      # - "traefik.http.routers.portainer.rule=Host(`portainer.${BACKPLANE_DOMAIN}`)"
+      # - "traefik.http.routers.portainer.middlewares=compress@docker"
+      - "traefik.http.routers.http-portainer.service=portainer"
+      - "traefik.http.services.portainer.loadbalancer.server.port=9000"
 
 volumes:
   portainer-data:
