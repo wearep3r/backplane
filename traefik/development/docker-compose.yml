@@ -41,8 +41,8 @@ services:
       - "traefik.http.middlewares.compress.compress=true"
       #- "traefik.http.routers.traefik.entrypoints=http"
       #- "traefik.http.routers.traefik.rule=Host(`traefik.${BACKPLANE_DOMAIN}`)"
-      - "traefik.http.routers.http-traefik.service=api@internal"
-      - "traefik.http.services.api@internal.loadbalancer.server.port=8080"
+      - "traefik.http.routers.traefik.service=api@internal"
+      #- "traefik.http.services.api@internal.loadbalancer.server.port=8080"
       #- "traefik.http.routers.traefik.middlewares=compress@docker"
     networks:
       - backplane

@@ -37,10 +37,8 @@ services:
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - "traefik-data:/letsencrypt"
-    security_opt:
-      - no-new-privileges:true
     labels:
-      - "traefik.enable=true"
+      - "backplane.enabled=true"
       - "traefik.http.middlewares.compress.compress=true"
       - "traefik.http.middlewares.secured.chain.middlewares=https-redirect,default-whitelist,default-headers"
       - "traefik.http.middlewares.https-redirect.redirectScheme.scheme=https"
@@ -53,15 +51,15 @@ services:
       - "traefik.http.middlewares.default-headers.headers.forceSTSHeader=true"
       - "traefik.http.middlewares.default-headers.headers.stsIncludeSubdomains=true"
       - "traefik.http.middlewares.default-headers.headers.stsPreload=true"
-      - "traefik.http.routers.traefik.entrypoints=http"
-      - "traefik.http.routers.traefik.rule=Host(`traefik.${BACKPLANE_DOMAIN}`)"
-      #- "traefik.http.routers.traefik.middlewares=https-redirect@docker"
-      - "traefik.http.routers.traefik-secure.entrypoints=https"
-      - "traefik.http.routers.traefik-secure.rule=Host(`traefik.${BACKPLANE_DOMAIN}`)"
-      - "traefik.http.routers.traefik-secure.tls=true"
-      - "traefik.http.routers.traefik-secure.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.traefik-secure.service=api@internal"
-      - "traefik.http.services.api@internal.loadbalancer.server.port=8080"
+      # - "traefik.http.routers.traefik.entrypoints=http"
+      # - "traefik.http.routers.traefik.rule=Host(`traefik.${BACKPLANE_DOMAIN}`)"
+      # #- "traefik.http.routers.traefik.middlewares=https-redirect@docker"
+      # - "traefik.http.routers.traefik-secure.entrypoints=https"
+      # - "traefik.http.routers.traefik-secure.rule=Host(`traefik.${BACKPLANE_DOMAIN}`)"
+      # - "traefik.http.routers.traefik-secure.tls=true"
+      # - "traefik.http.routers.traefik-secure.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.traefik.service=api@internal"
+      #- "traefik.http.services.api@internal.loadbalancer.server.port=8080"
       #- "traefik.http.routers.traefik-secure.middlewares=secured@docker"
       #- "traefik.http.routers.traefik-secure.middlewares=compress@docker"
     networks:
