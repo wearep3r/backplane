@@ -350,6 +350,9 @@ def update():
         )
 
         typer.secho(f"Successfully updated backplane", err=False, fg=typer.colors.GREEN)
+
+        stop()
+        start()
     except Exception as e:
         typer.secho(f"Failed to update backplane: {e}", err=True, fg=typer.colors.RED)
 
