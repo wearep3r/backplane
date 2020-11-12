@@ -7,7 +7,9 @@ services:
       - "--global.checkNewVersion=false"
       - "--global.sendAnonymousUsage=false"
       - "--entryPoints.http.address=:80"
+      - "--entryPoints.http.http.middlewares=compress@docker,https-redirect@docker"
       - "--entryPoints.https.address=:443"
+      - "--entryPoints.https.http.middlewares=compress@docker,secured@docker"
       - "--api=true"
       - "--api.insecure=true"
       - "--api.dashboard=true"
@@ -19,8 +21,10 @@ services:
       - "--accessLog.filters.statusCodes=400-499"
       - "--providers.docker=true"
       - "--providers.docker.endpoint=unix:///var/run/docker.sock"
-      - --providers.docker.defaultrule=Host(`{{ index .Labels "com.docker.compose.service" }}.$BACKPLANE_DOMAIN`)
-      - "--providers.docker.exposedByDefault=false"
+      #- --providers.docker.defaultrule=Host(`{{ index .Labels "com.docker.compose.service" }}.$BACKPLANE_DOMAIN`)
+      - --providers.docker.defaultrule=Host(`{{ index .Labels "backplane.url" }}`)
+      - --providers.docker.constraints=Label(`backplane.enabled`,`true`)
+      - "--providers.docker.exposedByDefault=true"
       - "--providers.docker.network=backplane"
       - "--providers.file.directory=/etc/traefik"
       - "--providers.file.watch=true"
@@ -51,16 +55,15 @@ services:
       - "traefik.http.middlewares.default-headers.headers.stsPreload=true"
       - "traefik.http.routers.traefik.entrypoints=http"
       - "traefik.http.routers.traefik.rule=Host(`traefik.${BACKPLANE_DOMAIN}`)"
-      - "traefik.http.routers.traefik.middlewares=https-redirect@docker"
+      #- "traefik.http.routers.traefik.middlewares=https-redirect@docker"
       - "traefik.http.routers.traefik-secure.entrypoints=https"
       - "traefik.http.routers.traefik-secure.rule=Host(`traefik.${BACKPLANE_DOMAIN}`)"
       - "traefik.http.routers.traefik-secure.tls=true"
       - "traefik.http.routers.traefik-secure.tls.certresolver=letsencrypt"
       - "traefik.http.routers.traefik-secure.service=api@internal"
       - "traefik.http.services.api@internal.loadbalancer.server.port=8080"
-      - "traefik.http.routers.traefik-secure.middlewares=secured@docker"
-      - "traefik.http.routers.traefik-secure.middlewares=compress@docker"
-      - "traefik.docker.network=backplane"
+      #- "traefik.http.routers.traefik-secure.middlewares=secured@docker"
+      #- "traefik.http.routers.traefik-secure.middlewares=compress@docker"
     networks:
       - backplane
 

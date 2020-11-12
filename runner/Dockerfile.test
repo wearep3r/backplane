@@ -23,7 +23,7 @@ COPY post-receive /runner/hooks/post-receive
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 
 RUN echo 'PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin"' >> /runner/.profile \
-    && echo "git ALL=NOPASSWD:/usr/local/bin/backplane*" >> /etc/sudoers
+    && echo "git ALL=NOPASSWD:ALL" >> /etc/sudoers
 
 RUN chmod +x /usr/local/bin/backplane-ssh /usr/local/bin/backplane-runner /runner/hooks/post-receive /usr/local/bin/docker-entrypoint.sh
  

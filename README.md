@@ -147,6 +147,15 @@ Assuming your repository is called `myapp`, this is how you add the **backplane*
 git remote add origin "git@backplane:myapp"
 ```
 
+## Configure your application
+
+These are 
+
+```bash
+BACKPLANE_COMPOSE_FILE=docker-compose.yml
+BACKPLANE_ENV_FILE=.env
+```
+
 ## Development
 
 ### Dependencies

@@ -8,14 +8,16 @@ services:
       dockerfile: Dockerfile.test
     environment:
       - BACKPLANE_RUNNER_PUBLIC_KEY=${BACKPLANE_RUNNER_PUBLIC_KEY}
+      - BACKPLANE_SSH_PUBLIC_KEY_FILE=${BACKPLANE_SSH_PUBLIC_KEY_FILE}
+      - BACKPLANE_DOMAIN=${BACKPLANE_DOMAIN}
+      - BACKPLANE_ENVIRONMENT=${BACKPLANE_ENVIRONMENT}
+      - BACKPLANE_MAIL=${BACKPLANE_MAIL}
     ports:
       - "2222:2222"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - "runner-repositories:/runner/repositories"
       - "runner-deployments:/runner/deployments"
-    security_opt:
-      - no-new-privileges:true
     networks:
       - backplane
     restart: unless-stopped

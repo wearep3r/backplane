@@ -10,8 +10,9 @@ if [ "$SSH_ORIGINAL_COMMAND" != "" ];
 then
   if [ ! -d "$REPO_PATH" ]; then
     git init --bare "$REPO_PATH" 1>&2
-    cp -R "$HOOKS"/* "$REPO_PATH/hooks/"
-    chown -R "$USER:$USER" "$REPO_PATH"
   fi
+
+  # Update Hooks
+  cp -R "$HOOKS"/* "$REPO_PATH/hooks/"
 fi
 cd "$REPO_ROOT" && git-shell -c "$SSH_ORIGINAL_COMMAND"

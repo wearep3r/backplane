@@ -7,6 +7,7 @@ services:
       - "--global.checkNewVersion=false"
       - "--global.sendAnonymousUsage=false"
       - "--entryPoints.http.address=:80"
+      - "--entryPoints.http.http.middlewares=compress@docker"
       - "--entryPoints.https.address=:443"
       - "--api=true"
       - "--api.insecure=true"
@@ -38,8 +39,7 @@ services:
       - "traefik.http.routers.traefik.rule=Host(`traefik.${BACKPLANE_DOMAIN}`)"
       - "traefik.http.routers.traefik.service=api@internal"
       - "traefik.http.services.api@internal.loadbalancer.server.port=8080"
-      - "traefik.http.routers.traefik.middlewares=compress@docker"
-      - "traefik.docker.network=backplane"
+      #- "traefik.http.routers.traefik.middlewares=compress@docker"
     networks:
       - backplane
 
