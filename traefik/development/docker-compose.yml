@@ -3,6 +3,7 @@ version: "3.8"
 services:
   traefik:
     image: "traefik:v2.3"
+    container_name
     command:
       - "--global.checkNewVersion=false"
       - "--global.sendAnonymousUsage=false"
@@ -21,7 +22,7 @@ services:
       - "--providers.docker=true"
       - "--providers.docker.endpoint=unix:///var/run/docker.sock"
       #- --providers.docker.defaultrule=Host(`{{ index .Labels "com.docker.compose.service" }}.$BACKPLANE_DOMAIN`)
-      - --providers.docker.defaultrule=Host(`{{ .Name }}.$BACKPLANE_DOMAIN`)
+      - --providers.docker.defaultrule=Host(`{{ index .Labels "com.docker.compose.service" }}.$BACKPLANE_DOMAIN`)
       - "--providers.docker.exposedByDefault=true"
       #- --providers.docker.defaultrule=Host(`{{ index .Labels "backplane.url" }}`)
       - --providers.docker.constraints=Label(`backplane.enabled`,`true`)
