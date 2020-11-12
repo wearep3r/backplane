@@ -20,7 +20,8 @@ services:
       - "--accessLog.filters.statusCodes=400-499"
       - "--providers.docker=true"
       - "--providers.docker.endpoint=unix:///var/run/docker.sock"
-      - --providers.docker.defaultrule=Host(`{{ index .Labels "com.docker.compose.service" }}.$BACKPLANE_DOMAIN`)
+      #- --providers.docker.defaultrule=Host(`{{ index .Labels "com.docker.compose.service" }}.$BACKPLANE_DOMAIN`)
+      - --providers.docker.defaultrule=Host(`{{ .Name }}.$BACKPLANE_DOMAIN`)
       - "--providers.docker.exposedByDefault=true"
       #- --providers.docker.defaultrule=Host(`{{ index .Labels "backplane.url" }}`)
       - --providers.docker.constraints=Label(`backplane.enabled`,`true`)

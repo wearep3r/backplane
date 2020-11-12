@@ -15,25 +15,24 @@ backplane start
 
 You can now visit the dashboards of both services in your browser:
 
-- [Traefik Dashboard](http://traefik.here.ns0.co)
-- [Portainer Dashboard](http://portainer.here.ns0.co)
+- [Traefik Dashboard](http://traefik.127-0-0-1.nip.io)
+- [Portainer Dashboard](http://portainer.127-0-0-1.nip.io)
 
 ## Configure your containers
 
-To expose one of your services through Traefik, your service needs to be part of the `backplane` Docker network and carry a few Traefik-relevant labels:
+To expose one of your services through Traefik, hook it up to the `backplane` Docker network and add a label called `backplane.enabled` with value `true`. Traefik will pick up the container's `name` and expose it as a subdomain of your **BACKPLANE_DOMAIN** (defaults to `127-0-0-1.nip.io`):
 
 ### docker
 
 ```bash
 docker run \
 --network backplane \
---label "traefik.enable=true" \
---label "traefik.http.routers.whoami.rule=Host(\`whoami.here.ns0.co\`)" \
---label "traefik.http.routers.whoami.entrypoints=http" \
+--name whoami \
+--label "backplane.enabled=true" \
 --rm traefik/whoami
 ```
 
-Visit http://whoami.here.ns0.co to verify it worked.
+Your container will be exposed as [http://whoami.127-0-0-1.nip.io](http://whoami.127-0-0-1.nip.io).
 
 ### docker-compose
 
@@ -43,14 +42,11 @@ version: "3.3"
 services:
   whoami:
     image: "traefik/whoami"
-    container_name: "simple-service"
+    container_name: "whoami"
     networks:
       - backplane
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.whoami.rule=Host(`whoami.here.ns0.co`)"
-      - "traefik.http.routers.whoami.entrypoints=http"
-      - "traefik.docker.network=backplane"
+      - "backplane.enabled=true"
 
 networks:
   backplane:
@@ -58,22 +54,22 @@ networks:
     external: true
 ```
 
-Visit http://whoami.here.ns0.co to verify it worked.
+Your container will be exposed as [http://whoami.127-0-0-1.nip.io](http://whoami.127-0-0-1.nip.io).
 
 ## Use in production
 
-**backplane** can be used on public cloud hosts, too:
+**backplane** can be used on public cloud hosts, too. Simply change `--environment` to `production` and add a mail address for LetsEncrypt. An optional `--domain` can be set on installation (defaults to `$SERVER_IP.nip.io`, e.g. `193-43-54-23.nip.io`).
 
 ```bash
-backplane install --environment production --domain mydomain.com --mail letsencrypt@mydomain.com
+backplane install --environment production --mail letsencrypt@mydomain.com [--domain mydomain.com]
 backplane start
 ```
 
 This enables the following additional features:
 
-- access your backplane services through `mydomain.com` (NOTE: if you do not specify a domain, **backplane** will use a wildcard domain based on the IP of your server, like 127-0-0-1.nip.io)
-- automatic SSL for your containers through LetsEncrypt
-- configurable HTTP to HTTPS redirect
+- access your backplane services through `mydomain.com`
+- automatic SSL for your containers through LetsEncrypt (HTTP-Validation)
+- automatic HTTP to HTTPS redirect
 - sane security defaults
 
 ### docker
@@ -81,17 +77,8 @@ This enables the following additional features:
 ```bash
 docker run \
 --network backplane \
---label "traefik.enable=true" \
---label "traefik.http.routers.whoami.rule=Host(\`whoami.here.ns0.co\`)" \
---label "traefik.http.routers.whoami.entrypoints=http" \
---label "traefik.http.routers.whoami.middlewares=compress@docker" \
---label "traefik.http.routers.whoami.middlewares=https-redirect@docker" \
---label "traefik.http.routers.whoami-secure.entrypoints=https" \
---label "traefik.http.routers.whoami-secure.rule=Host(\`whoami.mydomain.com\`)" \
---label "traefik.http.routers.whoami-secure.tls=true" \
---label "traefik.http.routers.whoami-secure.tls.certresolver=letsencrypt" \
---label "traefik.http.routers.whoami-secure.middlewares=secured@docker" \
---label "traefik.http.routers.whoami-secure.middlewares=compress@docker" \
+--name whoami \
+--label "backplane.enabled=true" \
 --rm traefik/whoami
 ```
 
