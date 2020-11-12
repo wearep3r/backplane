@@ -492,7 +492,7 @@ def stop(
             docker_compose_command = f"docker-compose -f docker-compose.yml -p backplane-{service} down -v --rmi all --remove-orphans"
         else:
             docker_compose_command = (
-                f"docker-compose -f docker-compose.yml -p backplane-{service} stop"
+                f"docker-compose -f docker-compose.yml -p backplane-{service} down"
             )
         project_dir = os.path.join(
             backplane["active_context_dir"], service, backplane["environment"]
