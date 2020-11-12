@@ -3,7 +3,7 @@ version: "3.8"
 services:
   traefik:
     image: "traefik:v2.3"
-    container_name
+    container_name: traefik
     command:
       - "--global.checkNewVersion=false"
       - "--global.sendAnonymousUsage=false"
