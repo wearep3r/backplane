@@ -4,6 +4,7 @@ services:
   portainer:
     image: portainer/portainer-ce:2.0.0
     command: -H unix:///var/run/docker.sock
+    container_name: portainer
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true

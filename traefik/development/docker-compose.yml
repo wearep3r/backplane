@@ -3,6 +3,7 @@ version: "3.8"
 services:
   traefik:
     image: "traefik:v2.3"
+    container_name: traefik
     command:
       - "--global.checkNewVersion=false"
       - "--global.sendAnonymousUsage=false"
@@ -37,9 +38,6 @@ services:
       - no-new-privileges:true
     labels:
       - "backplane.enabled=true"
-      - "traefik.http.middlewares.compress.compress=true"
-      - "traefik.http.routers.traefik.entrypoints=http"
-      - "traefik.http.routers.traefik.rule=Host(`traefik.${BACKPLANE_DOMAIN}`)"
       - "traefik.http.routers.traefik.service=api@internal"
       - "traefik.http.services.api@internal.loadbalancer.server.port=8080"
       #- "traefik.http.routers.traefik.middlewares=compress@docker"
