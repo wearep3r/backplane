@@ -336,7 +336,7 @@ def update():
     )
     try:
         backplane_repo = os.getenv(
-            "BACKPLANE_REPOSITORY", "git@gitlab.com:p3r.one/backplane.git"
+            "BACKPLANE_REPOSITORY", "https://github.com/wearep3r/backplane.git"
         )
         pull_command = f"git pull origin master"
         pull = subprocess.call(
