@@ -46,6 +46,9 @@ def getDynamicDomain():
 
 @app.command()
 def install(
+    reinstall: bool = typer.Option(
+        False, "--reinstall", "-r", help="Uninstall backplane first"
+    ),
     domain: str = typer.Option(
         getDynamicDomain(), "--domain", "-d", help="The domain your backplane runs on"
     ),
@@ -69,6 +72,9 @@ def install(
 ):
     error = False
     ssh_defaults = 'no-port-forwarding,no-X11-forwarding,no-agent-forwarding,no-pty,command="/usr/local/bin/backplane-ssh"'
+
+    if reinstall:
+        uninstall(force=True)
 
     # backplane['config_dir']
     if not os.path.exists(backplane["config_dir"]):
