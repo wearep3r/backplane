@@ -143,6 +143,12 @@ The runner makes it easy to bypass long CI pipelines and deploy your application
 
 You can migrate from local development to production with a simple `git push` when using **backplane** on both ends. Think of it as a micro-PaaS that you can use locally.
 
+## Advanced configuration
+
+**backplane** is only a thin wrapper around Traefik. If you require more complex routing scenarios or have more complex service setups (e.g. multiple domains per container), simply use Traefik's label-based configuration.
+
+[Read more](https://doc.traefik.io/traefik/) in the docs.
+
 ## Development
 
 ### Dependencies
@@ -154,6 +160,12 @@ poetry install
 npm i -g standard-version
 ```
 
+### Increase version
+
+```bash
+poetry version ...
+```
+
 ### Build
 
 ```bash
@@ -163,5 +175,5 @@ poetry build
 ### Publish
 
 ```bash
-poetry publish
+poetry publish --build
 ```
