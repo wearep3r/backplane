@@ -157,13 +157,6 @@ You can migrate from local development to production with a simple `git push` wh
 pip install poetry
 poetry shell
 poetry install
-npm i -g standard-version
-```
-
-### Increase version
-
-```bash
-poetry version ...
 ```
 
 ### Build
@@ -172,8 +165,14 @@ poetry version ...
 poetry build
 ```
 
-### Publish
+### Generate release
 
 ```bash
-poetry publish --build
+semantic-release version
+```
+
+### Publish release
+
+```bash
+semantic-release publish
 ```
