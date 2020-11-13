@@ -3,6 +3,7 @@ version: "3.8"
 services:
   runner:
     image: "backplane-runner"
+    container_name: "backplane-runner"
     build:
       context: ../.
       dockerfile: Dockerfile.test

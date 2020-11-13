@@ -3,7 +3,7 @@
   <h1 align="left">backplane</h1>
 </div>
 
-**[Website](https://backplane.sh)** — **[Documentation](https://backplane.sh/docs)**
+**[Website](https://backplane.sh)** — **[Documentation](https://backplane.sh/docs)** — **[Source Code](https://github.com/wearep3r/backplane)**
 
 A dead-simple backplane for your Docker Compose services with free SSL and Git-based continuous delivery. No more friction between development and production environments.
 
@@ -14,10 +14,12 @@ A dead-simple backplane for your Docker Compose services with free SSL and Git-b
 
 ## Get started
 
+> 🚀 Check out our [Examples](examples) section for quick-start templates for [Wordpress](examples/wordpress), [Sonarqube](examples/sonarqube) and more
+
 ```bash
 pip install backplane
-backplane install
-backplane start
+backplane init
+backplane up
 ```
 
 You can now visit the dashboards of Traefik and Portainer in your browser:
