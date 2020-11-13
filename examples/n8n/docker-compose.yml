@@ -1,0 +1,51 @@
+version: '3.1'
+
+services:
+
+  postgres:
+    image: postgres:11
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+      - POSTGRES_NON_ROOT_USER=postgres
+      - POSTGRES_NON_ROOT_PASSWORD=postgres
+    volumes:
+      - postgresql:/var/lib/postgresql
+      - postgresql_data:/var/lib/postgresql/data
+    networks:
+      - n8n
+
+  n8n:
+    image: n8nio/n8n
+    restart: always
+    environment:
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_DATABASE=postgres
+      - DB_POSTGRESDB_USER=postgres
+      - DB_POSTGRESDB_PASSWORD=postgres
+      - N8N_BASIC_AUTH_ACTIVE=false
+    labels:
+      - "backplane.enabled=true"
+      - "traefik.http.routers.n8n.service=n8n"
+      - "traefik.http.services.n8n.loadbalancer.server.port=5678"
+    networks:
+      - backplane
+      - n8n
+    volumes:
+      - n8n-data:/root/.n8n
+    command: /bin/sh -c "sleep 5; n8n start"
+
+volumes:
+  postgresql:
+  postgresql_data:
+  n8n-data:
+
+networks:
+  n8n:
+  backplane:
+    name: backplane
+    external: true

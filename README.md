@@ -5,7 +5,7 @@
 
 **[Website](https://backplane.sh)** — **[Documentation](https://backplane.sh/docs)**
 
-A dead-simple backplane for your Docker Compose services. No more friction between development and production environments. `git push` to deploy.
+A dead-simple backplane for your Docker Compose services with free SSL and Git-based continuous delivery. No more friction between development and production environments.
 
 [!["Version"](https://img.shields.io/github/v/tag/wearep3r/backplane?label=version)](https://github.com/wearep3r/backplane)
 [!["p3r. Slack"](https://img.shields.io/badge/slack-@wearep3r/general-purple.svg?logo=slack&label=Slack)](https://join.slack.com/t/wearep3r/shared_invite/zt-d9ao21f9-pb70o46~82P~gxDTNy_JWw)
@@ -27,7 +27,14 @@ You can now visit the dashboards of Traefik and Portainer in your browser:
 
 ## Configure your containers
 
-To expose one of your services through **backplane**, hook it up to the `backplane` Docker network and add a label called `backplane.enabled` with value `true`. **backplane** will pick up the container's `name` and expose it as a subdomain of your **BACKPLANE_DOMAIN** (defaults to `127-0-0-1.nip.io`):
+Exposing one of your services through **backplane** is easy:
+
+- add it to the `backplane` Docker network 
+- add a label `backplane.enabled` with value `true`
+
+**backplane** will automatically pick up the services's name (e.g. `whoami`) and exposes it as a subdomain of your **backplane domain** (defaults to `127-0-0-1.nip.io`).
+
+> **NOTE**: this assumes that your service is accessible on port 80 inside the container. If that is NOT the case, see [Advanced configuration](#-advanced-configuration)
 
 ### docker-compose
 
@@ -67,8 +74,6 @@ This enables the following additional features:
 - automatic HTTP to HTTPS redirect
 - sane security defaults
 
-### docker-compose
-
 ```yaml
 version: "3.3"
 
@@ -86,6 +91,8 @@ networks:
     name: backplane
     external: true
 ```
+
+Your container will be exposed as [https://whoami.mydomain.com](https://whoami.mydomain.com).
 
 ## Deploy to backplane
 
@@ -119,7 +126,7 @@ git commit -am "feat: figured out who I am"
 git push backplane master
 ```
 
-That's it!
+That's it! **backplane** will build and deploy your application and expose it automatically.
 
 ## What is backplane
 
@@ -127,7 +134,7 @@ That's it!
 
 - [Traefik](#), a very popular, cloud-native reverse-proxy
 - [Portainer](#), a very popular management interface for Docker
-- [backplane Runner](#), a simple CI/CD server
+- [backplane Runner](#), a simple Continuous Delivery server
 
 It aims to provide simple access to core prerequisites of modern app development:
 
@@ -148,6 +155,23 @@ You can migrate from local development to production with a simple `git push` wh
 **backplane** is only a thin wrapper around Traefik. If you require more complex routing scenarios or have more complex service setups (e.g. multiple domains per container), simply use Traefik's label-based configuration.
 
 [Read more](https://doc.traefik.io/traefik/) in the docs.
+
+### Expose containers with non-standard ports
+
+**backplane** expects your services to listen to port 80 inside their containers. If that is not the case, you need to tell the backplane about it. Add the following additional labels to tell backplane your service is accessible on port 9000:
+
+```yaml
+labels:
+  - backplane.enabled=true
+  - "traefik.http.routers.custom.service=custom-http"
+  - "traefik.http.services.custom-http.loadbalancer.server.port=9000"
+```
+
+## Examples
+
+In the [examples](examples) directory you'll find examples showing how to integrate backplane with your existing services
+
+Change to any of the example folders and run `docker-compose up`. The example's `README` will hold additional information on how to use it.
 
 ## Development
 

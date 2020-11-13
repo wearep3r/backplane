@@ -11,7 +11,7 @@ version_variable = [
     "backplane/__init__.py:__version__",
     "pyproject.toml:version"
 ]
-build_command = "pip install poetry && poetry build"
+build_command = "poetry build"
 #version_pattern = 'pyproject.toml:version = "{version}"(?m)'
 
 [tool.poetry.dependencies]
