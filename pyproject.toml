@@ -13,6 +13,7 @@ version_variable = [
 ]
 build_command = "poetry build"
 #version_pattern = 'pyproject.toml:version = "{version}"(?m)'
+changelog_file = "CHANGELOG.md"
 
 [tool.poetry.dependencies]
 python = "^3.7"
