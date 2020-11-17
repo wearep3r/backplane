@@ -669,22 +669,22 @@ def checkPrerequisites(ctx):
         raise typer.Abort()
 
     if not os.path.exists(backplane["config_dir"]):
-        if ctx.invoked_subcommand == "install":
+        if ctx.invoked_subcommand == "init":
             pass
         else:
             typer.secho(
-                "config directory missing. Run 'backplane install' first.",
+                "config directory missing. Run 'backplane init' first.",
                 err=True,
                 fg=typer.colors.RED,
             )
             sys.exit(1)
 
     if not os.path.exists(backplane["active_context_dir"]):
-        if ctx.invoked_subcommand == "install":
+        if ctx.invoked_subcommand == "init":
             pass
         else:
             typer.secho(
-                "active context directory missing. Run 'backplane install' first.",
+                "active context directory missing. Run 'backplane init' first.",
                 err=True,
                 fg=typer.colors.RED,
             )
