@@ -1,5 +1,9 @@
 <!--next-version-placeholder-->
 
+## v0.4.2 (2020-11-17)
+### Fix
+* Forgot to import utils ([`c9158f8`](https://github.com/wearep3r/backplane/commit/c9158f8fa6c1b0750ccb71394cd577ba259f4a27))
+
 ## v0.4.1 (2020-11-17)
 ### Fix
 * Removed docker-compose dependency ([`a691c5b`](https://github.com/wearep3r/backplane/commit/a691c5b340897583e106cef6b72592ca0653f709))
