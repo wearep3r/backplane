@@ -1,5 +1,9 @@
 <!--next-version-placeholder-->
 
+## v0.4.3 (2020-11-17)
+### Fix
+* Incorrect function name ([`b2b31c1`](https://github.com/wearep3r/backplane/commit/b2b31c1bcec4b174d2eb8d2d8f994dceaee24a60))
+
 ## v0.4.2 (2020-11-17)
 ### Fix
 * Forgot to import utils ([`c9158f8`](https://github.com/wearep3r/backplane/commit/c9158f8fa6c1b0750ccb71394cd577ba259f4a27))
