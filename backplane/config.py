@@ -59,15 +59,16 @@ class Config:
 
     def load(self):
         try:
-            if self.config_path.exists and self.config_path.is_file:
+            if self.config_path.exists() and self.config_path.is_file():
                 current_config = self.toDict()
                 custom_config = anyconfig.load([str(self.config_path)])
                 anyconfig.merge(current_config, custom_config)
 
                 self.__dict__ = current_config
                 return current_config
-            else:
-                raise ConfigNotFound
+            # else:
+            #    raise ConfigNotFound
+            pass
         except anyconfig.globals.UnknownFileTypeError as e:
             raise ConfigNotFound(e)
         except FileNotFoundError as e:
