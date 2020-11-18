@@ -1,5 +1,9 @@
 <!--next-version-placeholder-->
 
+## v0.4.7 (2020-11-18)
+### Fix
+* Cleaned up ([`944a848`](https://github.com/wearep3r/backplane/commit/944a8482c2a2954c426ccdfbdcd1dd73e1942c79))
+
 ## v0.4.6 (2020-11-18)
 ### Fix
 * Windows home directory ([`75d3c1f`](https://github.com/wearep3r/backplane/commit/75d3c1f7ef1c0a6053a807078113437704a4c238))
