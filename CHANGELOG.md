@@ -1,5 +1,9 @@
 <!--next-version-placeholder-->
 
+## v0.4.4 (2020-11-18)
+### Fix
+* Rewrite ([`a3e0a21`](https://github.com/wearep3r/backplane/commit/a3e0a21e751d4752a73e003578b7a9d8de2adad6))
+
 ## v0.4.3 (2020-11-17)
 ### Fix
 * Incorrect function name ([`b2b31c1`](https://github.com/wearep3r/backplane/commit/b2b31c1bcec4b174d2eb8d2d8f994dceaee24a60))
