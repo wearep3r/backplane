@@ -1,5 +1,9 @@
 <!--next-version-placeholder-->
 
+## v0.4.5 (2020-11-18)
+### Fix
+* Install routine ([`8142fe8`](https://github.com/wearep3r/backplane/commit/8142fe8e43e46fbcb3ea25ae878ecfe482ebf7e9))
+
 ## v0.4.4 (2020-11-18)
 ### Fix
 * Rewrite ([`a3e0a21`](https://github.com/wearep3r/backplane/commit/a3e0a21e751d4752a73e003578b7a9d8de2adad6))
