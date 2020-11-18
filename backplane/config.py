@@ -17,7 +17,8 @@ class Config:
     def __init__(self, config_path: Path = None):
         self.config_dir: Path = Path(
             os.getenv(
-                "BACKPLANE_CONIG_DIR", os.path.join(os.getenv("HOME", "~"), ".backplane")
+                "BACKPLANE_CONIG_DIR",
+                os.path.join(os.getenv("HOME", Path.home()), ".backplane"),
             )
         )
         self.default_context: str = "default"
