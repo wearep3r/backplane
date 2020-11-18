@@ -36,7 +36,6 @@ networks:
   sonarnet:
     driver: bridge
   backplane:
-    name: backplane
     external: true
 
 volumes:

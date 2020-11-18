@@ -11,6 +11,7 @@ from . import utils
 from .config import Config
 from .service import Service
 from .errors import ConfigNotFound
+from requests import get
 
 
 # Linux
@@ -87,6 +88,10 @@ def init(
     # A custom domain has been set
     if domain:
         backplane_config["domain"] = domain
+    else:
+        backplane_config[
+            "domain"
+        ] = f"{get('https://api.ipify.org').text.replace('.','-')}.nip.io"
 
     # A custom mail has been set
     if mail:

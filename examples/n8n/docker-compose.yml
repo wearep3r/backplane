@@ -47,5 +47,4 @@ volumes:
 networks:
   n8n:
   backplane:
-    name: backplane
     external: true

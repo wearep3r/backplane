@@ -27,18 +27,16 @@ You can now visit the dashboards of Traefik and Portainer in your browser:
 - [Traefik Dashboard](http://traefik.127-0-0-1.nip.io)
 - [Portainer Dashboard](http://portainer.127-0-0-1.nip.io)
 
-## Configure your containers
+## Configure your Docker Compose services
 
 Exposing one of your services through **backplane** is easy:
 
 - add it to the `backplane` Docker network 
 - add a label `backplane.enabled` with value `true`
 
-**backplane** will automatically pick up the services's name (e.g. `whoami`) and exposes it as a subdomain of your **backplane domain** (defaults to `127-0-0-1.nip.io`).
+**backplane** will automatically pick up the service's name (e.g. `whoami`) and exposes it as a subdomain of your **backplane domain** (defaults to `127-0-0-1.nip.io`).
 
 > **NOTE**: this assumes that your service is accessible on port 80 inside the container. If that is NOT the case, see [Advanced configuration](#-advanced-configuration)
-
-### docker-compose
 
 ```yaml
 version: "3.3"
@@ -54,27 +52,28 @@ services:
 
 networks:
   backplane:
-    name: backplane
     external: true
 ```
 
-Your container will be exposed as [http://whoami.127-0-0-1.nip.io](http://whoami.127-0-0-1.nip.io).
+Your service will be exposed as [http://whoami.127-0-0-1.nip.io](http://whoami.127-0-0-1.nip.io).
 
 ## Use in production
 
-**backplane** can be used on public cloud hosts, too. Simply change `--environment` to `production` and add a mail address for LetsEncrypt. An optional `--domain` can be set on installation (defaults to `$SERVER_IP.nip.io`, e.g. `193-43-54-23.nip.io`).
+**backplane** can be used on public cloud hosts, too. Use `--https` and add a mail address for LetsEncrypt on installation. An optional `--domain` can be set on installation (defaults to `$SERVER_IP.nip.io`, e.g. `193-43-54-23.nip.io` if `--https` is set).
 
 ```bash
-backplane install --environment production --mail letsencrypt@mydomain.com [--domain mydomain.com]
-backplane start
+backplane install --https --mail letsencrypt@mydomain.com [--domain mydomain.com]
+backplane up
 ```
 
 This enables the following additional features:
 
-- access your backplane services as subdomains of `mydomain.com`
-- automatic SSL for your containers through LetsEncrypt (HTTP-Validation)
+- access your Docker Compose services as subdomains of `mydomain.com`
+- automatic SSL for your Docker Compose services through LetsEncrypt (HTTP-Validation)
 - automatic HTTP to HTTPS redirect
 - sane security defaults
+
+The Docker Compose stack definition doesn't change from the one without `--https`. **backplane** deals with the necessary configuration.
 
 ```yaml
 version: "3.3"
@@ -90,7 +89,6 @@ services:
 
 networks:
   backplane:
-    name: backplane
     external: true
 ```
 
@@ -98,7 +96,7 @@ Your container will be exposed as [https://whoami.mydomain.com](https://whoami.m
 
 ## Deploy to backplane
 
-`git push` your code to the built-in **runner** for dead-simple auto-deployment of your Docker Compose Service. The runner deploys whatever you define in the repository's `docker-compose.yml` file and can load additional environment variables from a `.env` file.
+`git push` your code to the built-in **shipmate** for dead-simple auto-deployment of your Docker Compose services. **shipmate** deploys whatever you define in the repository's `docker-compose.yml` file and can load additional environment variables from a `.env` file.
 
 ### Update your ssh config
 

@@ -3,3 +3,4 @@
 dist
 **/*pycache*
 **/_*
+.pytest*

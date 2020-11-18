@@ -32,7 +32,6 @@ services:
 networks:
   wordpress:
   backplane:
-    name: backplane
     external: true
 
 volumes:

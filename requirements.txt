@@ -1,7 +1,0 @@
-black
-typer[all]
-pytest
-anyconfig
-docker
-python-dotenv
-pyyaml
