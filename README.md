@@ -1,5 +1,5 @@
 <div>
-  <img align="left" src="logo.png" width="175" alt="logo" />
+  <img align="left" src="https://raw.githubusercontent.com/wearep3r/backplane/master/logo.png" width="175" alt="logo" />
   <h1 align="left">backplane</h1>
 </div>
 

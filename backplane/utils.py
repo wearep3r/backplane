@@ -160,7 +160,7 @@ def getDynamicDomain(environment: str = "sss"):
     return domain
 
 
-def printStatus(container, service, backplane):
+def printStatus(container, service, config):
     message_name = typer.style(f"{container.name.strip('/')}: ", bold=True)
 
     if container.status == "running":
@@ -182,7 +182,7 @@ def printStatus(container, service, backplane):
         message_url = [
             typer.style(" at "),
             typer.style(
-                f"http://{backplane['services'][service]['url']}",
+                f"http://{config['services'][service]['url']}",
                 fg=typer.colors.BLUE,
             ),
         ]

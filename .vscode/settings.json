@@ -1,6 +1,6 @@
 {
   "workbench.colorTheme": "One Dark Pro",
-  "editor.tabSize": 2,
+  "editor.tabSize": 4,
   "python.linting.enabled": true,
   "python.linting.pylintEnabled": false,
   "python.linting.flake8Enabled": true,
@@ -24,7 +24,7 @@
       "editor.formatOnPaste": false
   },
   "git.autofetch": true,
-  "window.zoomLevel": 2,
+  "window.zoomLevel": 0,
   "explorer.confirmDelete": false,
   "explorer.confirmDragAndDrop": false,
   "python.pythonPath": "/Users/derfabianpeter/Library/Caches/pypoetry/virtualenvs/backplane-Zh3y_BQl-py3.9/bin/python",

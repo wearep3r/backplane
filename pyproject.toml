@@ -24,7 +24,7 @@ python-dotenv = "^0.15.0"
 PyYAML = "^5.3.1"
 docker-compose = "^1.27.4"
 packaging = "^20.4"
-read-version = {extras = ["toml"], version = "^0.3.1"}
+read-version = "^0.3.1"
 
 [tool.poetry.scripts]
 backplane = "backplane.main:app"
