@@ -1,5 +1,9 @@
 <!--next-version-placeholder-->
 
+## v0.4.19 (2020-11-19)
+### Fix
+* Reworked authentication, made it optional ([`a11849a`](https://github.com/wearep3r/backplane/commit/a11849a5e9123db58bb762441cbef0edbfcc0b9e))
+
 ## v0.4.18 (2020-11-19)
 ### Fix
 * Finalized https behaviour ([`9415a1c`](https://github.com/wearep3r/backplane/commit/9415a1cc7e782cbd2ce29c709f6797c455ec416f))
