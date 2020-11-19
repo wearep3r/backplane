@@ -122,7 +122,7 @@ def init(
             )
         except OSError as e:
             typer.secho(
-                f"Cannot generate password hash: {e}",
+                f"Cannot generate password hash: {e} (try 'apt install apache2-utils' to fix this",
                 err=True,
                 fg=typer.colors.RED,
             )

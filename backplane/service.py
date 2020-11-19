@@ -67,6 +67,8 @@ class Service:
                     "backplane.url": self.url,
                     "traefik.http.routers.traefik.rule": "Host(`" + self.url + "`)",
                     "traefik.http.middlewares.compress.compress": "true",
+                    "traefik.http.middlewares.auth.basicauth.users": f"{self.config.user}:{self.config.password_hash}",
+                    "traefik.http.middlewares.auth.basicauth.realm": "backplane",
                     "traefik.http.routers.traefik.service": "api@internal",
                 },
                 "name": "traefik",
@@ -91,7 +93,7 @@ class Service:
                         "--entryPoints.http.http.redirections.entryPoint.scheme=https",
                         "--entryPoints.http.http.middlewares=compress@docker",
                         "--entryPoints.https.address=:443",
-                        "--entryPoints.https.http.middlewares=compress@docker,secured@docker",
+                        "--entryPoints.https.http.middlewares=compress@docker,secured@dockers",
                         "--entryPoints.https.http.tls.certResolver=letsencrypt",
                         "--api=true",
                         "--api.insecure=true",
@@ -124,11 +126,13 @@ class Service:
                         "traefik.http.routers.traefik.rule": "Host(`" + self.url + "`)",
                         "traefik.http.middlewares.compress.compress": "true",
                         "traefik.http.routers.traefik.service": "api@internal",
-                        "traefik.http.middlewares.secured.chain.middlewares": "default-headers,auth",
+                        "traefik.http.routers.traefik.middlewares": "auth@docker",
+                        "traefik.http.middlewares.secured.chain.middlewares": "default-headers",
                         "traefik.http.middlewares.https-redirect.redirectScheme.scheme": "https",
                         "traefik.http.middlewares.https-redirect.redirectScheme.permanent": "true",
                         # "traefik.http.middlewares.default-whitelist.ipwhitelist.sourceRange": "10.0.0.0/8,192.168.0.0/16,127.0.0.1/32,172.0.0.0/8",
                         "traefik.http.middlewares.auth.basicauth.users": f"{self.config.user}:{self.config.password_hash}",
+                        "traefik.http.middlewares.auth.basicauth.realm": "backplane",
                         "traefik.http.middlewares.default-headers.headers.frameDeny": "true",
                         "traefik.http.middlewares.default-headers.headers.sslRedirect": "true",
                         "traefik.http.middlewares.default-headers.headers.browserXssFilter": "true",
@@ -141,6 +145,7 @@ class Service:
                         "traefik.http.routers.traefik-secured.rule": "Host(`"
                         + self.url
                         + "`)",
+                        "traefik.http.routers.traefik-secured.middlewares": "auth@docker",
                     },
                 }
             }

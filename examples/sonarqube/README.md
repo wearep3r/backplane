@@ -16,3 +16,12 @@ labels:
   - "traefik.http.routers.sonarqube.service=sonarqube"
   - "traefik.http.services.sonarqube.loadbalancer.server.port=9000"
 ```
+
+## Authentication
+
+To hook up to your backplane's authentication system, add the following to your `docker-compose.yml`:
+
+```yaml
+labels:
+  - "traefik.http.routers.sonarqube.middlewares=auth@docker"
+```

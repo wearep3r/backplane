@@ -100,6 +100,8 @@ Your container will be exposed as [https://whoami.mydomain.com](https://whoami.m
 
 ### Update your ssh config
 
+> cat ~/.ssh/id_rsa.pub | pbcopy
+
 Add the following to your local `~/.ssh/config` file. This allows you to reach the runner under `backplane` without further configuration.
 
 ```bash
