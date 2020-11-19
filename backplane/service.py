@@ -147,6 +147,9 @@ class Service:
                         "traefik.http.middlewares.default-headers.headers.stsIncludeSubdomains": "true",
                         "traefik.http.middlewares.default-headers.headers.stsPreload": "true",
                         "traefik.http.routers.traefik-secured.service": "api@internal",
+                        "traefik.http.routers.traefik-secured.rule": "Host(`"
+                        + self.url
+                        + "`)",
                     },
                 }
             }
