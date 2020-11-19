@@ -87,7 +87,7 @@ class Service:
                         "--global.checkNewVersion=false",
                         "--global.sendAnonymousUsage=false",
                         "--entryPoints.http.address=:80",
-                        "--entryPoints.http.http.middlewares=compress@docker,https-redirect@docker"
+                        "--entryPoints.http.http.middlewares=compress@docker,https-redirect@docker",
                         "--entryPoints.https.address=:443",
                         "--entryPoints.https.http.middlewares=compress@docker,secured@docker",
                         "--api=true",
@@ -264,7 +264,6 @@ class Service:
         docker_client = docker.from_env()
         if not self.container:
             try:
-                print(self.attrs)
                 self.container = docker_client.containers.run(**self.attrs)
 
                 self.wait()
