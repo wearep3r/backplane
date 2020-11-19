@@ -132,9 +132,7 @@ class Service:
                     # },
                     "labels": {
                         "backplane.enabled": "true",
-                        "traefik.http.routers.traefik.rule": "Host(`traefik."
-                        + self.url
-                        + "`)",
+                        "traefik.http.routers.traefik.rule": "Host(`" + self.url + "`)",
                         "traefik.http.middlewares.compress.compress": "true",
                         "traefik.http.routers.traefik.service": "api@internal",
                         "traefik.http.middlewares.secured.chain.middlewares": "https-redirect,default-whitelist,default-headers",
