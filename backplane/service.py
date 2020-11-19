@@ -81,7 +81,6 @@ class Service:
                     },
                 },
             }
-
             self.options = {
                 "https": {
                     "command": [
@@ -152,13 +151,15 @@ class Service:
                         "traefik.http.routers.traefik-secured.service": "api@internal",
                     },
                 }
+                if self.config.https:
+                    self.attrs = self.options.https
             }
         elif self.name == "portainer":
             self.attrs = {
                 "image": "portainer/portainer-ce:2.0.0",
                 "auto_remove": False,
                 "detach": True,
-                "entrypoint": "/portainer -H unix:///var/run/docker.sock",
+                "entrypoint": f"/portainer -H unix:///var/run/docker.sock --templates {self.config.template_url}",
                 "hostname": "portainer",
                 "labels": {
                     "backplane.enabled": "true",
@@ -284,11 +285,18 @@ class Service:
                     f"Unable to stop container for service {self.name}: {e}"
                 )
 
-    def remove(self):
+    def remove(self, prune: bool = False):
         if self.container:
             try:
                 self.stop()
                 self.container.remove()
+
+                if prune:
+                    # Remove volumes
+                    docker_client = docker.from_env()
+
+                    volume = docker_client.volumes.get(f"{self.name}-data")
+                    volume.remove(force=True)
             except Exception as e:
                 raise CannotRemoveService(
                     f"Unable to remove container for service {self.name}: {e}"

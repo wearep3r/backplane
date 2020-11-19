@@ -216,7 +216,7 @@ def down(
             s.stop()
 
             if prune:
-                s.remove()
+                s.remove(prune=True)
 
             s.echo()
         except Exception as e:

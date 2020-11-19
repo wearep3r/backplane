@@ -26,6 +26,7 @@ class Config:
         self.mail: str = None
         self.default_services: list = ["traefik", "portainer"]
         self.verbose: bool = False
+        self.template_url: str = "https://raw.githubusercontent.com/wearep3r/backplane/master/backplane-templates.json"
         self.ssh_public_key: str = None
         self.ssh_public_key_file: Path = Path(f"{os.getenv('HOME')}/.ssh/id_rsa.pub")
         self.https: bool = False

@@ -5,7 +5,7 @@
 
 **[Website](https://backplane.sh)** — **[Documentation](https://backplane.sh/docs)** — **[Source Code](https://github.com/wearep3r/backplane)**
 
-A dead-simple backplane for your Docker Compose services with free SSL and Git-based continuous delivery. No more friction between development and production environments.
+A dead-simple backplane for your Docker Compose services - with free SSL and Git-based continuous delivery. Run any Docker app [manually](examples/) or from [backplane's app-store](http://portainer.127-0-0-1.nip.io/#!/1/docker/templates) in no time.
 
 [!["Version"](https://img.shields.io/github/v/tag/wearep3r/backplane?label=version)](https://github.com/wearep3r/backplane)
 [!["p3r. Slack"](https://img.shields.io/badge/slack-@wearep3r/general-purple.svg?logo=slack&label=Slack)](https://join.slack.com/t/wearep3r/shared_invite/zt-d9ao21f9-pb70o46~82P~gxDTNy_JWw)
@@ -22,10 +22,10 @@ backplane init
 backplane up
 ```
 
-You can now visit the dashboards of Traefik and Portainer in your browser:
+You can now visit the dashboards of [Traefik](https://doc.traefik.io/traefik/) and [Portainer](https://www.portainer.io/) in your browser:
 
-- [Traefik Dashboard](http://traefik.127-0-0-1.nip.io)
-- [Portainer Dashboard](http://portainer.127-0-0-1.nip.io)
+- [traefik.127-0-0-1.nip.io](http://traefik.127-0-0-1.nip.io)
+- [portainer.127-0-0-1.nip.io](http://portainer.127-0-0-1.nip.io)
 
 ## Configure your Docker Compose services
 
@@ -57,9 +57,9 @@ networks:
 
 Your service will be exposed as [http://whoami.127-0-0-1.nip.io](http://whoami.127-0-0-1.nip.io).
 
-## Use in production
+## Use backplane in the cloud
 
-**backplane** can be used on public cloud hosts, too. Use `--https` and add a mail address for LetsEncrypt on installation. An optional `--domain` can be set on installation (defaults to `$SERVER_IP.nip.io`, e.g. `193-43-54-23.nip.io` if `--https` is set).
+**backplane** can be used on public cloud hosts, too. Use `--https` and add a mail address for LetsEncrypt on installation to enable additional security for your applications. An optional `--domain` can be set on installation (defaults to `$SERVER_IP.nip.io`, e.g. `193-43-54-23.nip.io` if `--https` is set).
 
 ```bash
 backplane install --https --mail letsencrypt@mydomain.com [--domain mydomain.com]
@@ -94,7 +94,7 @@ networks:
 
 Your container will be exposed as [https://whoami.mydomain.com](https://whoami.mydomain.com).
 
-## Deploy to backplane
+## Deploy to backplane (WIP)
 
 `git push` your code to the built-in **shipmate** for dead-simple auto-deployment of your Docker Compose services. **shipmate** deploys whatever you define in the repository's `docker-compose.yml` file and can load additional environment variables from a `.env` file.
 
@@ -130,11 +130,11 @@ That's it! **backplane** will build and deploy your application and expose it au
 
 ## What is backplane
 
-**backplane** consists of 3 main services:
+**backplane** consists of 3 main services running as Docker containers on your host:
 
-- [Traefik](#), a very popular, cloud-native reverse-proxy
-- [Portainer](#), a very popular management interface for Docker
-- [backplane Runner](#), a simple Continuous Delivery server
+- [Traefik](https://doc.traefik.io/traefik/), a very popular, cloud-native reverse-proxy
+- [Portainer](https://www.portainer.io/), a very popular management interface for Docker
+- [shipmate](#), a simple software logistics solution
 
 It aims to provide simple access to core prerequisites of modern app development:
 
@@ -144,11 +144,16 @@ It aims to provide simple access to core prerequisites of modern app development
 
 To develop and run modern web-based applications you need a few core ingredients, like a reverse-proxy handling request routing, a way to manage containers and a way to deploy your code. **backplane** offers this for local development as well as on production nodes in a seemless way.
 
-The runner makes it easy to bypass long CI pipelines and deploy your application to a remote backplane host with ease. 
+**shipmate** makes it easy to bypass long CI pipelines and deploy your application to a remote backplane host with ease.
 
-**backplane** is mainly aimed at small to medium sized development teams or solo-developers that don't require complex infrastructure. Use it for rapid prototyping or simple deployment scenarios where the full weight of modern CI/CD offerings just isn't bearable.
+**backplane** is mainly aimed at small to medium sized development teams or solo-developers that don't require complex infrastructure. Use it for rapid prototyping or simple deployment scenarios where the full weight of modern CI/CD and PaaS offerings just isn't bearable.
 
 You can migrate from local development to production with a simple `git push` when using **backplane** on both ends. Think of it as a micro-PaaS that you can use locally.
+
+## What backplane is NOT
+
+- a PaaS solution; backplane only provides a well-configured reverse-proxy and a management interface for containers
+- meant for production use. You can, though, but at your own risk
 
 ## Advanced configuration
 
@@ -200,3 +205,7 @@ semantic-release version
 ```bash
 semantic-release publish
 ```
+
+## Author
+
+Fabian Peter, [p3r.](https://www.p3r.one/)
