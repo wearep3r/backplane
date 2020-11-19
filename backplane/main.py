@@ -179,6 +179,13 @@ def up(
                 fg=typer.colors.RED,
             )
             sys.exit(1)
+        except Exception as e:
+            typer.secho(
+                f"Unable to start service {service}: {e}",
+                err=True,
+                fg=typer.colors.RED,
+            )
+            sys.exit(1)
 
 
 @app.command()

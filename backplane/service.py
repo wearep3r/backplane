@@ -147,16 +147,13 @@ class Service:
                         "traefik.http.middlewares.default-headers.headers.stsIncludeSubdomains": "true",
                         "traefik.http.middlewares.default-headers.headers.stsPreload": "true",
                         "traefik.http.routers.traefik-secured.service": "api@internal",
+                        "traefik.http.routers.traefik-secured.tls": "true",
                         "traefik.http.routers.traefik-secured.rule": "Host(`"
                         + self.url
                         + "`)",
                     },
                 }
             }
-            # Rewrite https config
-            if self.config.https:
-                for key in self.options["https"].keys():
-                    self.attrs[key] = self.options["https"][key]
         elif self.name == "portainer":
             self.attrs = {
                 "image": "portainer/portainer-ce:2.0.0",
@@ -180,10 +177,30 @@ class Service:
                     },
                 },
             }
+
+            self.options = {
+                "https": {
+                    "labels": {
+                        "backplane.enabled": "true",
+                        "traefik.http.routers.portainer.rule": "Host(`" + self.url + "`)",
+                        "traefik.http.services.portainer.loadbalancer.server.port": "9000",
+                        "traefik.http.routers.portainer-secured.tls": "true",
+                        "traefik.http.routers.portainer-secured.rule": "Host(`"
+                        + self.url
+                        + "`)",
+                    },
+                }
+            }
         elif self.name == "shipmate":
             pass
+
         else:
             raise ServiceNotFound(f"service {self.name} does not exist")
+
+        # Rewrite https config
+        if self.config.https:
+            for key in self.options["https"].keys():
+                self.attrs[key] = self.options["https"][key]
 
     def _status(self):
         docker_client = docker.from_env()
