@@ -93,7 +93,7 @@ class Service:
                         "--entryPoints.http.http.redirections.entryPoint.scheme=https",
                         "--entryPoints.http.http.middlewares=compress@docker",
                         "--entryPoints.https.address=:443",
-                        "--entryPoints.https.http.middlewares=compress@docker,secured@dockers",
+                        "--entryPoints.https.http.middlewares=compress@docker,secured@docker",
                         "--entryPoints.https.http.tls.certResolver=letsencrypt",
                         "--api=true",
                         "--api.insecure=true",
