@@ -1,5 +1,9 @@
 <!--next-version-placeholder-->
 
+## v0.4.18 (2020-11-19)
+### Fix
+* Finalized https behaviour ([`9415a1c`](https://github.com/wearep3r/backplane/commit/9415a1cc7e782cbd2ce29c709f6797c455ec416f))
+
 ## v0.4.17 (2020-11-19)
 ### Fix
 * Finalized https behaviour ([`b797951`](https://github.com/wearep3r/backplane/commit/b797951950ee3850f72b83b1fc657ccc99a67b54))
