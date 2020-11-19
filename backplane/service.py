@@ -116,20 +116,20 @@ class Service:
                         "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=http",
                     ],
                     "ports": {"80/tcp": 80, "443/tcp": 443},
-                    "healthcheck": {
-                        "test": [
-                            "CMD",
-                            "wget",
-                            "--no-verbose",
-                            "--tries=1",
-                            "--spider",
-                            "http://localhost/ping",
-                        ],
-                        "interval": "1m30s",
-                        "timeout": "10s",
-                        "retries": 3,
-                        "start_period": "1s",
-                    },
+                    # "healthcheck": {
+                    #     "test": [
+                    #         "CMD",
+                    #         "wget",
+                    #         "--no-verbose",
+                    #         "--tries=1",
+                    #         "--spider",
+                    #         "http://localhost/ping",
+                    #     ],
+                    #     "interval": "1m30s",
+                    #     "timeout": "10s",
+                    #     "retries": 3,
+                    #     "start_period": "1s",
+                    # },
                     "labels": {
                         "backplane.enabled": "true",
                         "traefik.http.routers.traefik.rule": "Host(`traefik."
@@ -154,7 +154,8 @@ class Service:
             }
             # Rewrite https config
             if self.config.https:
-                self.attrs = self.options["https"]
+                for key in self.options["https"].keys():
+                    self.attrs[key] = self.options["https"][key]
         elif self.name == "portainer":
             self.attrs = {
                 "image": "portainer/portainer-ce:2.0.0",
@@ -263,6 +264,7 @@ class Service:
         docker_client = docker.from_env()
         if not self.container:
             try:
+                print(self.attrs)
                 self.container = docker_client.containers.run(**self.attrs)
 
                 self.wait()
@@ -271,6 +273,7 @@ class Service:
                 raise CannotStartService(
                     f"Unable to start container for service {self.name}: {e}"
                 )
+
         else:
             if self.container.attrs["State"]["Status"] != "running":
                 self.container.start()

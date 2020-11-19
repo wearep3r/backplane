@@ -10,7 +10,7 @@ from read_version import read_version
 from . import utils
 from .config import Config
 from .service import Service
-from .errors import ConfigNotFound
+from .errors import ConfigNotFound, CannotStartService
 from requests import get
 
 
@@ -166,11 +166,19 @@ def up(
                 fg=typer.colors.BRIGHT_BLACK,
             )
 
-        if restart:
-            s.remove()
+        try:
+            if restart:
+                s.remove()
 
-        s.start()
-        s.echo()
+            s.start()
+            s.echo()
+        except CannotStartService as e:
+            typer.secho(
+                f"Unable to start service {service}: {e}",
+                err=True,
+                fg=typer.colors.RED,
+            )
+            sys.exit(1)
 
 
 @app.command()
