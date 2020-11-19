@@ -12,6 +12,7 @@ from .config import Config
 from .service import Service
 from .errors import ConfigNotFound, CannotStartService
 from requests import get
+import subprocess
 
 
 # Linux
@@ -48,6 +49,18 @@ def init(
         "--mail",
         "-m",
         help="The mail address used for LetsEncrypt",
+    ),
+    user: str = typer.Option(
+        conf.user,
+        "--user",
+        "-u",
+        help="User for authentication",
+    ),
+    password: str = typer.Option(
+        conf.password,
+        "--password",
+        "-p",
+        help="Password for authentication",
     ),
     https: bool = typer.Option(False, "--https", "-h", help="Enable https support"),
     ssh_public_key: str = typer.Option(
@@ -92,6 +105,28 @@ def init(
         backplane_config[
             "domain"
         ] = f"{get('https://api.ipify.org').text.replace('.','-')}.nip.io"
+
+    if user:
+        backplane_config["user"] = user
+
+    if password:
+        backplane_config["password"] = password
+
+        # Generate password hash
+        try:
+            password_hash = subprocess.run(
+                ["htpasswd", "-nb", user, password], stdout=subprocess.PIPE
+            )
+            backplane_config["password_hash"] = (
+                password_hash.stdout.rstrip().decode().split(":")[1]
+            )
+        except OSError as e:
+            typer.secho(
+                f"Cannot generate password hash: {e}",
+                err=True,
+                fg=typer.colors.RED,
+            )
+            sys.exit(1)
 
     # A custom mail has been set
     if mail:
