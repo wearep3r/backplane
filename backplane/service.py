@@ -151,9 +151,10 @@ class Service:
                         "traefik.http.routers.traefik-secured.service": "api@internal",
                     },
                 }
-                if self.config.https:
-                    self.attrs = self.options.https
             }
+            # Rewrite https config
+            if self.config.https:
+                self.attrs = self.options.https
         elif self.name == "portainer":
             self.attrs = {
                 "image": "portainer/portainer-ce:2.0.0",
