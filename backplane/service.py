@@ -130,6 +130,7 @@ class Service:
                         "traefik.http.middlewares.secured.chain.middlewares": "default-headers",
                         "traefik.http.middlewares.https-redirect.redirectScheme.scheme": "https",
                         "traefik.http.middlewares.https-redirect.redirectScheme.permanent": "true",
+                        "traefik.http.middlewares.backend.headers.sslProxyHeaders.X-FORWARDED-PROTO=https
                         # "traefik.http.middlewares.default-whitelist.ipwhitelist.sourceRange": "10.0.0.0/8,192.168.0.0/16,127.0.0.1/32,172.0.0.0/8",
                         "traefik.http.middlewares.auth.basicauth.users": f"{self.config.user}:{self.config.password_hash}",
                         "traefik.http.middlewares.auth.basicauth.realm": "backplane",
@@ -140,6 +141,7 @@ class Service:
                         "traefik.http.middlewares.default-headers.headers.forceSTSHeader": "true",
                         "traefik.http.middlewares.default-headers.headers.stsIncludeSubdomains": "true",
                         "traefik.http.middlewares.default-headers.headers.stsPreload": "true",
+                        "traefik.http.middlewares.default-headers.headers.sslProxyHeaders.X-FORWARDED-PROTO": "https",
                         "traefik.http.routers.traefik-secured.service": "api@internal",
                         "traefik.http.routers.traefik-secured.tls": "true",
                         "traefik.http.routers.traefik-secured.rule": "Host(`"
