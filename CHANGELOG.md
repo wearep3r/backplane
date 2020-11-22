@@ -1,5 +1,9 @@
 <!--next-version-placeholder-->
 
+## v0.4.22 (2020-11-22)
+### Fix
+* Added forwared-proto headers ([`803bb13`](https://github.com/wearep3r/backplane/commit/803bb13d4dbd66094805be896cad6d28457d9103))
+
 ## v0.4.21 (2020-11-22)
 ### Fix
 * Added forwared-proto headers ([`b31845a`](https://github.com/wearep3r/backplane/commit/b31845af2b65596b2268047093940c151e9675aa))

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "backplane"
-version = "0.4.21"
+version = "0.4.22"
 description = "a dead-simple backplane for Dockerized applications"
 authors = ["Fabian Peter <fabian@p3r.link>"]
 license = "LICENSE.md"
