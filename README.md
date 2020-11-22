@@ -5,7 +5,7 @@
 
 **[Website](https://backplane.sh)** — **[Documentation](https://backplane.sh/docs)** — **[Source Code](https://github.com/wearep3r/backplane)**
 
-A dead-simple backplane for your Docker Compose services - with free SSL and Git-based continuous delivery. Run any Docker app [manually](examples/) or from [backplane's app-store](http://portainer.127-0-0-1.nip.io/#!/1/docker/templates) in no time.
+A dead-simple backplane for your Docker Compose services - with free SSL and Git-based continuous delivery. Run any Docker app [manually](examples/) or from [backplane's app-store](http://portainer.127-0-0-1.ns0.co/#!/1/docker/templates) in no time.
 
 [!["Version"](https://img.shields.io/github/v/tag/wearep3r/backplane?label=version)](https://github.com/wearep3r/backplane)
 [!["p3r. Slack"](https://img.shields.io/badge/slack-@wearep3r/general-purple.svg?logo=slack&label=Slack)](https://join.slack.com/t/wearep3r/shared_invite/zt-d9ao21f9-pb70o46~82P~gxDTNy_JWw)
@@ -24,8 +24,8 @@ backplane up
 
 You can now visit the dashboards of [Traefik](https://doc.traefik.io/traefik/) and [Portainer](https://www.portainer.io/) in your browser:
 
-- [traefik.127-0-0-1.nip.io](http://traefik.127-0-0-1.nip.io)
-- [portainer.127-0-0-1.nip.io](http://portainer.127-0-0-1.nip.io)
+- [traefik.127-0-0-1.ns0.co](http://traefik.127-0-0-1.ns0.co)
+- [portainer.127-0-0-1.ns0.co](http://portainer.127-0-0-1.ns0.co)
 
 ## Configure your Docker Compose services
 
@@ -34,7 +34,7 @@ Exposing one of your services through **backplane** is easy:
 - add it to the `backplane` Docker network 
 - add a label `backplane.enabled` with value `true`
 
-**backplane** will automatically pick up the service's name (e.g. `whoami`) and exposes it as a subdomain of your **backplane domain** (defaults to `127-0-0-1.nip.io`).
+**backplane** will automatically pick up the service's name (e.g. `whoami`) and exposes it as a subdomain of your **backplane domain** (defaults to `127-0-0-1.ns0.co`).
 
 > **NOTE**: this assumes that your service is accessible on port 80 inside the container. If that is NOT the case, see [Advanced configuration](#-advanced-configuration)
 
@@ -55,11 +55,11 @@ networks:
     external: true
 ```
 
-Your service will be exposed as [http://whoami.127-0-0-1.nip.io](http://whoami.127-0-0-1.nip.io).
+Your service will be exposed as [http://whoami.127-0-0-1.ns0.co](http://whoami.127-0-0-1.ns0.co).
 
 ## Use backplane in the cloud
 
-**backplane** can be used on public cloud hosts, too. Use `--https` and add a mail address for LetsEncrypt on installation to enable additional security for your applications. An optional `--domain` can be set on installation (defaults to `$SERVER_IP.nip.io`, e.g. `193-43-54-23.nip.io` if `--https` is set).
+**backplane** can be used on public cloud hosts, too. Use `--https` and add a mail address for LetsEncrypt on installation to enable additional security for your applications. An optional `--domain` can be set on installation (defaults to `$SERVER_IP.ns0.co`, e.g. `193-43-54-23.ns0.co` if `--https` is set).
 
 ```bash
 backplane install --https --mail letsencrypt@mydomain.com [--domain mydomain.com]

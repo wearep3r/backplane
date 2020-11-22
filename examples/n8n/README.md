@@ -4,7 +4,7 @@
 
 This is based on the default `docker-compose.yml` from [n8n](https://github.com/n8n-io/n8n/blob/master/docker/compose/withPostgres/docker-compose.yml).
 
-Run `docker-compose up`. Visit n8n at [http://n8n.127-0-0-1.nip.io](http://n8n.127-0-0-1.nip.io).
+Run `docker-compose up`. Visit n8n at [http://n8n.127-0-0-1.ns0.co](http://n8n.127-0-0-1.ns0.co).
 
 ## Notes
 

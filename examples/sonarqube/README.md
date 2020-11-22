@@ -4,7 +4,7 @@
 
 This is based on the default `docker-compose.yml` from [Sonarsource's Sonarqube](https://github.com/SonarSource/docker-sonarqube).
 
-Run `docker-compose up`. Visit Sonarqube at [http://sonaqube.127-0-0-1.nip.io](http://sonaqube.127-0-0-1.nip.io).
+Run `docker-compose up`. Visit Sonarqube at [http://sonaqube.127-0-0-1.ns0.co](http://sonaqube.127-0-0-1.ns0.co).
 
 ## Notes
 

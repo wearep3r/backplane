@@ -33,7 +33,7 @@ class Config:
         self.ssh_public_key: str = None
         self.ssh_public_key_file: Path = Path(f"{os.getenv('HOME')}/.ssh/id_rsa.pub")
         self.https: bool = False
-        self.domain: str = "127-0-0-1.nip.io"
+        self.domain: str = "127-0-0-1.ns0.co"
         self.contexts_dir: Path = os.getenv(
             "BACKPLANE_CONTEXTS_DIR", self.config_dir / "contexts"
         )

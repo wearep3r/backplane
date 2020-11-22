@@ -4,7 +4,7 @@
 
 This is based on the default `docker-compose.yml` from [bitnami's wordpress](https://github.com/bitnami/bitnami-docker-wordpress). 
 
-Run `docker-compose up`. Visit Wordpress at [http://wordpress.127-0-0-1.nip.io](http://wordpress.127-0-0-1.nip.io).
+Run `docker-compose up`. Visit Wordpress at [http://wordpress.127-0-0-1.ns0.co](http://wordpress.127-0-0-1.ns0.co).
 
 ## Notes
 

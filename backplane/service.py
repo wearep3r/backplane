@@ -155,7 +155,7 @@ class Service:
                 "image": "portainer/portainer-ce:2.0.0",
                 "auto_remove": False,
                 "detach": True,
-                "entrypoint": f"/portainer -H unix:///var/run/docker.sock --templates {self.config.template_url}",
+                "entrypoint": f"/portainer -H unix:///var/run/docker.sock --templates {self.config.template_url} --admin-password {self.config.password_hash}",
                 "hostname": "portainer",
                 "labels": {
                     "backplane.enabled": "true",
@@ -221,7 +221,7 @@ class Service:
 
     def echo(self, nl=True):
         # Target message:
-        # [traefik] running at http://traefik.127-0-0-1.nip.io
+        # [traefik] running at http://traefik.127-0-0-1.ns0.co
         message_prefix = typer.style(f"{self.name} ", bold=True)
         # message_prefix = typer.style(" ∟ ", fg=typer.colors.RED)
 

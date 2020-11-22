@@ -104,7 +104,7 @@ def init(
     else:
         backplane_config[
             "domain"
-        ] = f"{get('https://api.ipify.org').text.replace('.','-')}.nip.io"
+        ] = f"{get('https://api.ipify.org').text.replace('.','-')}.ns0.co"
 
     if user:
         backplane_config["user"] = user

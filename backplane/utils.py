@@ -148,7 +148,7 @@ def getDynamicDomain(environment: str = "sss"):
             f = requests.request("GET", "https://ifconfig.me")
             ip = f.text.replace(".", "-")
 
-            domain = f"{ip}.nip.io"
+            domain = f"{ip}.ns0.co"
         except Exception as e:
             typer.secho(
                 f"Couldn't determine dynamic domain: {e}",
