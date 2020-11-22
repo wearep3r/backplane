@@ -1,5 +1,9 @@
 <!--next-version-placeholder-->
 
+## v0.4.21 (2020-11-22)
+### Fix
+* Added forwared-proto headers ([`b31845a`](https://github.com/wearep3r/backplane/commit/b31845af2b65596b2268047093940c151e9675aa))
+
 ## v0.4.20 (2020-11-19)
 ### Fix
 * Reworked authentication, made it optional ([`54c4488`](https://github.com/wearep3r/backplane/commit/54c4488a01fe5b83b011c8720c35ccd1e26fd7d1))
