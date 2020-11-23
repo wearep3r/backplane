@@ -1,5 +1,9 @@
 <!--next-version-placeholder-->
 
+## v0.5.1 (2020-11-23)
+### Fix
+* Refactor ([`41a5789`](https://github.com/wearep3r/backplane/commit/41a5789f5a059b5709ea93bb1e1c589e018bc1f4))
+
 ## v0.5.0 (2020-11-23)
 ### Feature
 * Added docker config ([`db88792`](https://github.com/wearep3r/backplane/commit/db88792418ef9ae88152e9f4c8021363232def81))
