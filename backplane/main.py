@@ -7,10 +7,11 @@ import sys
 from typing import Optional
 from pathlib import Path
 from read_version import read_version
-from . import utils
-from .config import Config
-from .service import Service
-from .errors import ConfigNotFound, CannotStartService
+from backplane import utils
+from backplane.config import Config
+from backplane.app import App
+from backplane.service import Service
+from backplane.errors import ConfigNotFound, CannotStartService
 from requests import get
 import subprocess
 
@@ -50,6 +51,9 @@ def init(
         "-m",
         help="The mail address used for LetsEncrypt",
     ),
+    no_docker: bool = typer.Option(
+        False, "--no-docker", help="Don't create backplane network"
+    ),
     user: str = typer.Option(
         conf.user,
         "--user",
@@ -88,8 +92,12 @@ def init(
     # Create default context dir
     utils.createDir(conf.default_context_dir)
 
+    # Create apps dir
+    utils.createDir(conf.app_dir)
+
     # Create Docker network
-    utils.createNetwork("backplane")
+    if not no_docker:
+        utils.createNetwork("backplane")
 
     # Prepare custom config
     backplane_config = {}
@@ -279,6 +287,26 @@ def down(
 
 
 @app.command()
+def install(
+    name: str = typer.Argument(os.path.basename(os.getcwd())),
+    path: Path = typer.Argument(os.getcwd()),
+):
+    """
+    Install an app into backplane.
+    """
+
+    if conf.verbose > 0:
+        typer.secho(
+            f"Installing {name} from {path}",
+            err=False,
+            fg=typer.colors.BRIGHT_BLACK,
+        )
+
+    app = App(name=name, path=path, config=conf)
+    app.install()
+
+
+@app.command()
 def config():
     if conf.verbose > 0:
         typer.secho(
@@ -321,8 +349,11 @@ def version_callback(value: bool):
 def checkPrerequisites(ctx):
     # Check for Docker
     if not which("docker"):
-        typer.secho("Docker not installed", err=True, fg=typer.colors.RED)
-        raise typer.Abort()
+        if ctx.invoked_subcommand == "init":
+            pass
+        else:
+            typer.secho("Docker not installed", err=True, fg=typer.colors.RED)
+            raise typer.Abort()
 
     if not os.path.exists(conf.config_dir):
         if ctx.invoked_subcommand == "init":
@@ -415,9 +446,9 @@ def callback(
     # Update config
     try:
         if config_path:
-            conf = Config(config_path)
+            new_config = Config(config_path)
         else:
-            conf = Config()
+            new_config = Config()
     except ConfigNotFound as e:
         typer.secho(
             f"Failed to load config: {e}",
@@ -425,6 +456,7 @@ def callback(
             fg=typer.colors.RED,
         )
         sys.exit(1)
+    config = new_config
 
     # Check pre-reqs
     checkPrerequisites(ctx)
@@ -438,17 +470,17 @@ def callback(
     if conf.verbose > 0:
         typer.secho(f"Version: {version}", err=False, fg=typer.colors.BRIGHT_BLACK)
         typer.secho(
-            f"Context: {config.active_context}",
+            f"Context: {conf.active_context}",
             err=False,
             fg=typer.colors.BRIGHT_BLACK,
         )
         typer.secho(
-            f"Context directory: {config.active_context_dir}",
+            f"Context directory: {conf.active_context_dir}",
             err=False,
             fg=typer.colors.BRIGHT_BLACK,
         )
         typer.secho(
-            f"Config file: {config.config_path}",
+            f"Config file: {conf.config_path}",
             err=False,
             fg=typer.colors.BRIGHT_BLACK,
         )

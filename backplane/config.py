@@ -5,6 +5,7 @@ import sys
 import json
 from json import JSONEncoder
 from .errors import ConfigNotFound
+import typer
 
 
 class CustomEncoder(JSONEncoder):
@@ -25,6 +26,7 @@ class Config:
         self.active_context: str = "default"
         self.mail: str = None
         self.default_services: list = ["traefik", "portainer"]
+        self.apps: dict = {}
         self.verbose: bool = False
         self.user: str = "admin"
         self.password: str = "admin"
@@ -49,18 +51,27 @@ class Config:
         self.config_path: Path = (
             config_path if config_path else self.active_context_dir / "backplane.yml"
         )
+        self.app_dir: Path = Path(self.active_context_dir / "apps")
 
         self.load()
 
-    def serialize(self):
-        current_config = dict(self.__dict__)
-        return CustomEncoder().encode(current_config)
+    def serialize(self, data=None):
+        if not data:
+            return CustomEncoder().encode(dict(self.__dict__))
+        else:
+            return CustomEncoder().encode(dict(data))
 
-    def toJSON(self):
-        return self.serialize()
+    def toJSON(self, data=None):
+        if not data:
+            return self.serialize()
+        else:
+            return self.serialize(data)
 
-    def toDict(self):
-        return json.loads(self.serialize())
+    def toDict(self, data=None):
+        if not data:
+            return json.loads(self.serialize())
+        else:
+            return json.loads(self.serialize(data))
 
     def load(self):
         try:
@@ -84,22 +95,31 @@ class Config:
         # can't be serialized by JSONEncoder by default)
         return json.dumps(dict(self.__dict__), indent=4, sort_keys=True, default=str)
 
-    def write(self):
+    def write(self, custom_config: dict = None):
+        # Note: this is only dealing with user config
+        if not os.path.exists(self.config_path):
+            # Create an empty config
+            with open(self.config_path, "a"):
+                os.utime(self.config_path, None)
         try:
-            backplane_config = anyconfig.loads(json.dumps(config), ac_parser="json")
+            if not custom_config:
+                backplane_config = anyconfig.loads(
+                    json.dumps(self.toDict()), ac_parser="json"
+                )
+            else:
+                # Only write user config, not the whole thing
+                user_config = anyconfig.load([str(self.config_path)])
+                anyconfig.merge(user_config, self.toDict(custom_config))
+                backplane_config = user_config
             # anyconfig.merge(backplane_config, config)
             # if os.path.exists(config_path):
 
             # Open ~/.backplane/contexts/default/backplane.yml
             # Save config as yml
-            with open(config_path, "w+") as writer:
+
+            with open(self.config_path, "w+") as writer:
                 writer.write(anyconfig.dumps(backplane_config, ac_parser="yaml"))
 
             return backplane_config
         except OSError as e:
-            typer.secho(
-                f"Couldn't write backplane config at {config_path}: {e}",
-                err=True,
-                fg=typer.colors.RED,
-            )
-            sys.exit(1)
+            raise ConfigNotFound(e)

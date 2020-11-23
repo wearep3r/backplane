@@ -187,7 +187,8 @@ class Service:
                     },
                 }
             }
-        elif self.name == "shipmate":
+
+        elif self.name == "backplane":
             pass
 
         else:

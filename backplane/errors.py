@@ -26,3 +26,9 @@ class CannotRemoveService(BaseException):
     """Raised when a container can't be removed"""
 
     pass
+
+
+class CannotInstallApp(BaseException):
+    """Raised when an app can't be installed"""
+
+    pass
