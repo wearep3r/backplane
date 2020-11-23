@@ -1,0 +1,29 @@
+version: '3.8'
+services:
+  backplane:
+    build: .
+    command: ssh
+    volumes:
+      - ${HOME}/.ssh:/runner/.ssh
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "runner-repositories:/runner/repositories"
+      - "runner-deployments:/runner/deployments"
+    environment:
+      - BACKPLANE_RUNNER_PUBLIC_KEY=${BACKPLANE_RUNNER_PUBLIC_KEY}
+      - BACKPLANE_SSH_PUBLIC_KEY_FILE=${BACKPLANE_SSH_PUBLIC_KEY_FILE}
+      - BACKPLANE_DOMAIN=${BACKPLANE_DOMAIN}
+      - BACKPLANE_ENVIRONMENT=${BACKPLANE_ENVIRONMENT}
+      - BACKPLANE_MAIL=${BACKPLANE_MAIL}
+    ports:
+      - "2222:2222"
+    networks:
+      - backplane
+
+volumes:
+  runner-repositories:
+  runner-deployments:
+
+networks:
+  backplane:
+    name: backplane
+    external: true
