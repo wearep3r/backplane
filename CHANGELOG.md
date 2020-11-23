@@ -1,5 +1,13 @@
 <!--next-version-placeholder-->
 
+## v0.5.0 (2020-11-23)
+### Feature
+* Added docker config ([`db88792`](https://github.com/wearep3r/backplane/commit/db88792418ef9ae88152e9f4c8021363232def81))
+* Added apps concept ([`476899a`](https://github.com/wearep3r/backplane/commit/476899a08d0ece5bcb5954a5fb6115e59f4ce148))
+
+### Fix
+* Added ns0.co support ([`6ce2d6e`](https://github.com/wearep3r/backplane/commit/6ce2d6e17b06462aceee8d78a2583a1256db6413))
+
 ## v0.4.22 (2020-11-22)
 ### Fix
 * Added forwared-proto headers ([`803bb13`](https://github.com/wearep3r/backplane/commit/803bb13d4dbd66094805be896cad6d28457d9103))
