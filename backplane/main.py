@@ -290,6 +290,7 @@ def down(
 def install(
     name: str = typer.Argument(os.path.basename(os.getcwd())),
     path: Path = typer.Argument(os.getcwd()),
+    source: str = typer.Option(None, "--from", "-f"),
 ):
     """
     Install an app into backplane.
@@ -302,7 +303,7 @@ def install(
             fg=typer.colors.BRIGHT_BLACK,
         )
 
-    app = App(name=name, path=path, config=conf)
+    app = App(name=name, path=path, source=source, config=conf)
     app.install()
 
 
@@ -342,7 +343,7 @@ def status(
 def version_callback(value: bool):
     if value:
         version = read_version(".", "__init__.py")
-        typer.echo(f"backplane CLI: {version}")
+        typer.echo(f"{version}")
         raise typer.Exit()
 
 

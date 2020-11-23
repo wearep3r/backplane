@@ -196,6 +196,16 @@ poetry install
 poetry build
 ```
 
+#### Build Docker
+
+```bash
+docker build -t wearep3r/backplane .
+docker tag wearep3r/backplane wearep3r/backplane:$(backplane --version)
+docker push wearep3r/backplane:$(backplane --version)
+docker tag wearep3r/backplane wearep3r/backplane:latest
+docker push wearep3r/backplane:latest
+```
+
 ### Generate release
 
 ```bash

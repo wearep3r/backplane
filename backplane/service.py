@@ -9,6 +9,7 @@ from .errors import (
 import docker
 import time
 import typer
+import os
 
 
 class Service:
@@ -189,7 +190,40 @@ class Service:
             }
 
         elif self.name == "backplane":
-            pass
+            self.attrs = {
+                "image": "wearep3r/backplane:0.5.0",
+                "auto_remove": False,
+                "detach": True,
+                "command": "ssh",
+                "hostname": "backplane",
+                "labels": {},
+                "name": "backplane",
+                "network": "backplane",
+                "ports": {"2222/tcp": 2222},
+                "environment": {
+                    "BACKPLANE_DOMAIN": self.config.domain,
+                    "BACKPLANE_MAIL": self.config.mail,
+                },
+                "restart_policy": {"Name": "on-failure", "MaximumRetryCount": 5},
+                "volumes": {
+                    f"{os.path.join(os.getenv('HOME'),'.ssh')}": {
+                        "bind": "/backplane/.ssh",
+                        "mode": "rw",
+                    },
+                    "backplane-repositories": {
+                        "bind": "/backplane/repositories",
+                        "mode": "rw",
+                    },
+                    f"{self.config.config_dir}": {
+                        "bind": "/backplane/.backplane",
+                        "mode": "rw",
+                    },
+                    "/var/run/docker.sock": {
+                        "bind": "/var/run/docker.sock",
+                        "mode": "rw",
+                    },
+                },
+            }
 
         else:
             raise ServiceNotFound(f"service {self.name} does not exist")

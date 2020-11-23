@@ -8,7 +8,7 @@ REPO_SRC=$PWD
 
 REPO_BASE=$(basename "$REPO_SRC")
 REPO_NAME=${REPO_BASE/.git/}
-REPO_DEST=/runner/deployments/$REPO_NAME
+REPO_DEST=/backplane/.backplane/apps/$REPO_NAME
 COMMIT_HASH=$(git rev-parse --short=6 HEAD)
 
 echo "Received repository"

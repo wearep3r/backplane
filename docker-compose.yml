@@ -1,13 +1,14 @@
 version: '3.8'
 services:
   backplane:
+    image: wearep3r/backplane
     build: .
     command: ssh
     volumes:
       - ${HOME}/.ssh:/runner/.ssh
       - "/var/run/docker.sock:/var/run/docker.sock"
-      - "runner-repositories:/runner/repositories"
-      - "runner-deployments:/runner/deployments"
+      - "repositories:/backplane/repositories"
+      - "deployments:/backplane/deployments"
     environment:
       - BACKPLANE_RUNNER_PUBLIC_KEY=${BACKPLANE_RUNNER_PUBLIC_KEY}
       - BACKPLANE_SSH_PUBLIC_KEY_FILE=${BACKPLANE_SSH_PUBLIC_KEY_FILE}
@@ -20,8 +21,8 @@ services:
       - backplane
 
 volumes:
-  runner-repositories:
-  runner-deployments:
+  repositories:
+  deployments:
 
 networks:
   backplane:

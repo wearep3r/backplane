@@ -25,7 +25,7 @@ class Config:
         self.default_context: str = "default"
         self.active_context: str = "default"
         self.mail: str = None
-        self.default_services: list = ["traefik", "portainer"]
+        self.default_services: list = ["traefik", "portainer", "backplane"]
         self.apps: dict = {}
         self.verbose: bool = False
         self.user: str = "admin"

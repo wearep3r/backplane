@@ -31,8 +31,8 @@ class App:
         self,
         name: str,
         path: Path,
-        url: str = None,
         config: Config = None,
+        source: str = None,
     ):
         if config:
             self.config = config
@@ -44,32 +44,79 @@ class App:
 
         self.name: str = name
         self.path: Path = path
-        self.url: str = url
+        self.source: str = source
 
     def install(self):
         if not self.path.exists():
-            raise CannotInstallApp(f"{self.path} no found")
+            raise CannotInstallApp(f"{self.path} not found")
 
-        # 2. Run the app
-        # - load compose config w/ anyconf
-        # - check if build needed
-        # if self.url:
-        #         try:
-        #             Repo.clone_from(self.url, self.path)
+        if not self.config:
+            raise CannotInstallApp("No config given")
 
-        # Save app to config
-        if self.config:
+        # Check if --source is given
+        # If yes, download and install app from source to app_dir/self.name
+        if self.source:
+            print("downloading app")
+            # Loading app from external source
+            if validators.url(self.source):
+                # Source is valid
+                # Clone source to app_path
+                app_path = os.path.join(self.config.app_dir, self.name)
+
+                try:
+                    # Check if app already exists
+                    if os.path.exists(app_path):
+                        # Pull
+                        print(f"pulling updates from {self.source}")
+                        repo = Repo(app_path)
+                        o = repo.remotes.origin
+                        o.pull()
+                    else:
+                        print(f"cloning from {self.source}")
+                        repo = Repo.clone_from(self.source, app_path)
+                    assert repo.__class__ is Repo
+
+                    # Set app path
+                    self.path = app_path
+
+                    # Set app name
+                    remote_url = repo.remotes[0].config_reader.get(
+                        "url"
+                    )  # e.g. 'https://github.com/abc123/MyRepo.git'
+                    self.name = os.path.splitext(os.path.basename(remote_url))[
+                        0
+                    ]  # 'MyRepo'
+                except Exception as e:
+                    raise CannotInstallApp(
+                        f"Failed to clone app repository from {self.source}: {e}"
+                    )
+            else:
+                raise CannotInstallApp(f"Illegal source: {self.source}")
+
+        # Save app to user config
+        try:
             custom_config = {"apps": {}}
-            custom_config["apps"][self.name] = {"path": self.path, "params": {}}
+            custom_config["apps"][self.name] = {
+                "path": self.path,
+                "params": {},
+            }
+
+            if self.source:
+                custom_config["apps"][self.name]["source"] = self.source
+            else:
+                custom_config["apps"][self.name]["source"] = self.path
 
             self.config.write(custom_config)
-
             if self.config.verbose > 0:
                 typer.secho(
                     f"Saving new config to {self.config.config_path}",
                     err=False,
                     fg=typer.colors.BRIGHT_BLACK,
                 )
+        except Exception as e:
+            raise CannotInstallApp(f"Cannot save config: {e}")
+
+        # Install the app
         try:
             install_command = [
                 "docker-compose",
@@ -80,14 +127,14 @@ class App:
             if self.config.verbose:
                 install_command.append("--verbose")
 
-            env_file = self.path / ".env"
-            if env_file.exists():
+            env_file = os.path.join(self.path, ".env")
+            if os.path.exists(env_file):
                 install_command.append("--env-file")
                 install_command.append(str(env_file))
 
-            compose_file = self.path / "docker-compose.yml"
+            compose_file = os.path.join(self.path, "docker-compose.yml")
             app_config = {}
-            if compose_file.exists():
+            if os.path.exists(compose_file):
                 install_command.append("-f")
                 install_command.append(str(compose_file))
 
