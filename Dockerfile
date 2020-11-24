@@ -19,6 +19,7 @@ COPY . /app/
 RUN poetry install
 
 RUN useradd -rm -d /backplane -s /bin/bash -g root -G sudo -u 1000 git \
+    && usermod -aG root git \
     && echo "git:git" | chpasswd
 
 RUN mkdir -p /backplane/.ssh/ \

@@ -10,6 +10,7 @@ import docker
 import time
 import typer
 import os
+from read_version import read_version
 
 
 class Service:
@@ -191,7 +192,7 @@ class Service:
 
         elif self.name == "backplane":
             self.attrs = {
-                "image": "wearep3r/backplane:0.5.0",
+                "image": f"wearep3r/backplane:{read_version('.', '__init__.py')}",
                 "auto_remove": False,
                 "detach": True,
                 "command": "ssh",
@@ -214,7 +215,7 @@ class Service:
                         "bind": "/backplane/repositories",
                         "mode": "rw",
                     },
-                    f"{self.config.config_dir}": {
+                    f"{os.path.join(self.config.config_dir)}": {
                         "bind": "/backplane/.backplane",
                         "mode": "rw",
                     },

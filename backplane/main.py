@@ -304,7 +304,14 @@ def install(
         )
 
     app = App(name=name, path=path, source=source, config=conf)
-    app.install()
+    try:
+        app.install()
+    except Exception as e:
+        typer.secho(
+            f"Failed to install {name} from {path}: {e}",
+            err=True,
+            fg=typer.colors.RED,
+        )
 
 
 @app.command()
@@ -349,12 +356,12 @@ def version_callback(value: bool):
 
 def checkPrerequisites(ctx):
     # Check for Docker
-    if not which("docker"):
-        if ctx.invoked_subcommand == "init":
-            pass
-        else:
-            typer.secho("Docker not installed", err=True, fg=typer.colors.RED)
-            raise typer.Abort()
+    # if not which("docker"):
+    #     if ctx.invoked_subcommand == "init":
+    #         pass
+    #     else:
+    #         typer.secho("Docker not installed", err=True, fg=typer.colors.RED)
+    #         raise typer.Abort()
 
     if not os.path.exists(conf.config_dir):
         if ctx.invoked_subcommand == "init":

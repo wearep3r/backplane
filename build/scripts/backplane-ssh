@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-REPO_ROOT="/runner/repositories"
-HOOKS="/runner/hooks"
+REPO_ROOT="/backplane/repositories"
+HOOKS="/backplane/hooks"
+
 # Example git command: git-receive-pack 'apollo-git-test'
 REPO_NAME=$(echo "$SSH_ORIGINAL_COMMAND" | awk '{print $2}' | tr -d "'")
 REPO_PATH="$REPO_ROOT/$REPO_NAME.git"

@@ -58,40 +58,46 @@ class App:
         if self.source:
             print("downloading app")
             # Loading app from external source
-            if validators.url(self.source):
-                # Source is valid
-                # Clone source to app_path
-                app_path = os.path.join(self.config.app_dir, self.name)
 
-                try:
-                    # Check if app already exists
-                    if os.path.exists(app_path):
-                        # Pull
-                        print(f"pulling updates from {self.source}")
-                        repo = Repo(app_path)
-                        o = repo.remotes.origin
-                        o.pull()
-                    else:
-                        print(f"cloning from {self.source}")
-                        repo = Repo.clone_from(self.source, app_path)
+            # Source is valid
+            # Clone source to app_path
+            app_path = os.path.join(self.config.app_dir, self.name)
+            cwd = os.getcwd()
+
+            try:
+                # Check if app already exists
+                if os.path.exists(app_path):
+                    print(f"found existing app in {app_path}")
+
+                    # Change to app_dir
+                    os.chdir(app_path)
+
+                    # Pull
+                    print(f"pulling updates from {self.source}")
+                    repo = Repo(app_path)
                     assert repo.__class__ is Repo
 
-                    # Set app path
-                    self.path = app_path
+                    for remote in repo.remotes:
+                        print(f"- {remote.name} {remote.url}")
+                    print(repo.remotes.origin.pull())
 
-                    # Set app name
-                    remote_url = repo.remotes[0].config_reader.get(
-                        "url"
-                    )  # e.g. 'https://github.com/abc123/MyRepo.git'
-                    self.name = os.path.splitext(os.path.basename(remote_url))[
-                        0
-                    ]  # 'MyRepo'
-                except Exception as e:
-                    raise CannotInstallApp(
-                        f"Failed to clone app repository from {self.source}: {e}"
-                    )
-            else:
-                raise CannotInstallApp(f"Illegal source: {self.source}")
+                    # Return to previous directory
+                    os.chdir(cwd)
+                else:
+                    print(f"cloning from {self.source}")
+                    repo = Repo.clone_from(self.source, app_path)
+                assert repo.__class__ is Repo
+
+                # Set app path
+                self.path = app_path
+
+                # Set app name from git remote
+                remote_url = repo.remotes[0].config_reader.get(
+                    "url"
+                )  # e.g. 'https://github.com/abc123/MyRepo.git'
+                self.name = os.path.splitext(os.path.basename(remote_url))[0]  # 'MyRepo'
+            except Exception as e:
+                raise CannotInstallApp(f"Failed to install app from {self.source}: {e}")
 
         # Save app to user config
         try:

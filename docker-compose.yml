@@ -5,11 +5,13 @@ services:
     build: .
     command: ssh
     volumes:
-      - ${HOME}/.ssh:/runner/.ssh
+      - "${HOME}/.ssh:/backplane/.ssh"
       - "/var/run/docker.sock:/var/run/docker.sock"
       - "repositories:/backplane/repositories"
-      - "deployments:/backplane/deployments"
+      - "${HOME}/.backplane:/backplane/.backplane"
     environment:
+      - UID=$UID
+      - GID=$GID
       - BACKPLANE_RUNNER_PUBLIC_KEY=${BACKPLANE_RUNNER_PUBLIC_KEY}
       - BACKPLANE_SSH_PUBLIC_KEY_FILE=${BACKPLANE_SSH_PUBLIC_KEY_FILE}
       - BACKPLANE_DOMAIN=${BACKPLANE_DOMAIN}
