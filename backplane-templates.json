@@ -35,6 +35,6 @@
 				"url": "https://github.com/backplane-apps/loki",
 				"stackfile": "docker-compose.yml"
 			}
-		},
+		}
 	]
 }

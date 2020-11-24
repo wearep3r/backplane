@@ -27,6 +27,7 @@ class Config:
         self.mail: str = None
         self.default_services: list = ["traefik", "portainer", "backplane"]
         self.apps: dict = {}
+        self.appstore_url: str = "https://github.com/backplane-apps"
         self.verbose: bool = False
         self.user: str = "admin"
         self.password: str = "admin"

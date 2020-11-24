@@ -53,14 +53,28 @@ class App:
         if not self.config:
             raise CannotInstallApp("No config given")
 
+        # If a name is give but no source,
+        # first: check if there's an installed app by that name in backplane.yml and update it
+        # second: check if an app with that name exists in the app store (https://github.com/backplane-apps) and install it
+
+        if self.name in self.config.apps:
+            # app has been installed before
+            # set self.source to app's source
+            self.source = self.config.apps[self.name]["source"]
+        else:
+            # Name is given
+            if not self.source:
+                # No source is given
+                # Set self.source to app-store url
+                self.source = f"{self.config.appstore_url}/{self.name}"
+            else:
+                pass
+
         # Check if --source is given
         # If yes, download and install app from source to app_dir/self.name
         if self.source:
-            print("downloading app")
             # Loading app from external source
 
-            # Source is valid
-            # Clone source to app_path
             app_path = os.path.join(self.config.app_dir, self.name)
             cwd = os.getcwd()
 
@@ -77,9 +91,7 @@ class App:
                     repo = Repo(app_path)
                     assert repo.__class__ is Repo
 
-                    for remote in repo.remotes:
-                        print(f"- {remote.name} {remote.url}")
-                    print(repo.remotes.origin.pull())
+                    repo.remotes.origin.pull()
 
                     # Return to previous directory
                     os.chdir(cwd)
@@ -183,24 +195,25 @@ class App:
                     print("Deployment complete.")
 
                     # Get logs
-                    logs_command = [
-                        "docker-compose",
-                        "-p",
-                        self.name,
-                        "-f",
-                        compose_file,
-                        "logs",
-                        "--tail",
-                        "50",
-                    ]
-                    result = subprocess.Popen(logs_command, stdout=subprocess.PIPE)
-                    while True:
-                        try:
-                            output = next(result.stdout)
-                            typer.echo(output.decode().strip())
-                        except StopIteration:
-                            print("Logs complete.")
-                            break
+                    if self.config.verbose:
+                        logs_command = [
+                            "docker-compose",
+                            "-p",
+                            self.name,
+                            "-f",
+                            compose_file,
+                            "logs",
+                            "--tail",
+                            "50",
+                        ]
+                        result = subprocess.Popen(logs_command, stdout=subprocess.PIPE)
+                        while True:
+                            try:
+                                output = next(result.stdout)
+                                typer.echo(output.decode().strip())
+                            except StopIteration:
+                                print("Logs complete.")
+                                break
                 else:
                     raise CannotInstallApp(
                         f"Deployment failed with code {result.returncode}."
