@@ -211,7 +211,7 @@ Host backplane
 
 **Wrapup**:
 
-- our remote **backplane** (on 1.2.3.4) is now available as `backplane` when connection with ssh
+- our remote **backplane** (on 1.2.3.4) is now available as `backplane` when connecting with ssh
 - **backplane** runs on port 2222; ports ins git remote-urls can cause problems which is why we *mask* port and ip behind the `backplane` hostname
 
 > **NOTE**: replace the value of "HostName" with your server's IP or hostname. For convenience, we're using [ns0](https://ns0.co) here to provide wildcard DNS on IP basis
