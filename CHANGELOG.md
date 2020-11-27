@@ -1,5 +1,9 @@
 <!--next-version-placeholder-->
 
+## v0.5.4 (2020-11-27)
+### Fix
+* Improved docs, fixed logo urls ([`ab5b4f1`](https://github.com/wearep3r/backplane/commit/ab5b4f1537f06a11755631321cde952508b03226))
+
 ## v0.5.3 (2020-11-27)
 ### Fix
 * Updated templates ([`480c685`](https://github.com/wearep3r/backplane/commit/480c6852e82b790357715b0fc11e7bc32624438f))
