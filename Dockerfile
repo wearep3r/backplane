@@ -57,6 +57,21 @@ ENV DOCKER_HOST=unix:///var/run/docker.sock
 RUN backplane init --no-docker
 
 EXPOSE 2222
+
+ARG BUILD_DATE
+ARG VCS_REF
+ARG BUILD_VERSION
+
+# Labels.
+LABEL org.label-schema.schema-version="1.0"
+LABEL org.label-schema.build-date=$BUILD_DATE
+LABEL org.label-schema.name="wearep3r/backplane"
+LABEL org.label-schema.description="A dead-simple backplane for your Docker Compose services"
+LABEL org.label-schema.url="http://backplane.sh/"
+LABEL org.label-schema.vcs-url="https://github.com/wearep3r/backplane"
+LABEL org.label-schema.vcs-ref=$VCS_REF
+LABEL org.label-schema.vendor="wearep3r"
+LABEL org.label-schema.version=$BUILD_VERSION
  
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
  

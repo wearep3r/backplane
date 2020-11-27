@@ -194,9 +194,11 @@ Let's assume our remote **backplane** has the following attributes:
 - backplane-domain: 1-2-3-4.ns0.co
 - https: enabled
 
-#### Update your ssh config
+> **ATTENTION**: the Git Repository service uses `~/.ssh` of the user that initialized **backplane** (i.e. `backplane init`) to determine the `authorized_keys` that are eligible to push to **backplane** via git. Make sure to add all relevant public keys to `~/.ssh/authorized_keys` on your **backplane** host
 
 > **TIP**: `cat ~/.ssh/id_rsa.pub | pbcopy` copies your SSH public key to your clipboard
+
+#### Update your ssh config
 
 Add the following to your local `~/.ssh/config` file. This allows you to reach your remote **backplane** under `backplane` without further configuration.
 
@@ -214,7 +216,7 @@ Host backplane
 
 > **NOTE**: replace the value of "HostName" with your server's IP or hostname. For convenience, we're using [ns0](https://ns0.co) here to provide wildcard DNS on IP basis
 
-### Update your git remote
+#### Update your git remote
 
 Assuming your application repository is called `whoami`, this is how you add your remote **backplane** to your git remotes:
 
@@ -228,7 +230,7 @@ git remote add origin "git@backplane:whoami"
 - we're connecting as user `git`
 - our repository on the remote it called `whoami`
 
-### Deploy to your server
+#### Deploy to your server
 
 > **HINT**: as you see, we're using the [Conventional Commit](https://www.conventionalcommits.org/en/v1.0.0/) format here. This will likely be a part of backplane's future roadmap in the form of automated versioning based on commits. Just FYI.
 

@@ -10,6 +10,8 @@ from json import JSONEncoder
 import typer
 import subprocess
 from .config import Config
+import datetime
+from read_version import read_version
 from .errors import (
     ConfigNotFound,
     ServiceNotFound,
@@ -166,6 +168,13 @@ class App:
 
             # Check if build is necessary
             build = False
+
+            # Augment
+            os.environ["BUILD_DATE"] = datetime.datetime.utcnow().isoformat()
+            # os.environ["BUILD_VERSION"]
+            # BUILD_VERSION
+            # VCS_REF
+
             for service in app_config["services"]:
                 service_config = app_config["services"][service]
                 if "build" in service_config:
