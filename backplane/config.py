@@ -30,8 +30,8 @@ class Config:
         self.appstore_url: str = "https://github.com/backplane-apps"
         self.verbose: bool = False
         self.user: str = "admin"
-        self.password: str = "admin"
-        self.password_hash: str = "$apr1$pEpJOLwu$Ip9rzx4pRHOyzryPWyfP7."
+        self.password: str = "backplane"
+        self.password_hash: str = "$apr1$gH.I91hA$YFiFb5M9K7jNsvFtEy4U70"
         self.template_url: str = "https://raw.githubusercontent.com/wearep3r/backplane/master/backplane-templates.json"
         self.ssh_public_key: str = None
         self.ssh_public_key_file: Path = Path(f"{os.getenv('HOME')}/.ssh/id_rsa.pub")

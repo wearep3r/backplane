@@ -352,9 +352,7 @@ class Service:
                     # Remove volumes
                     docker_client = docker.from_env()
 
-                    volumes = docker_client.volumes.list(
-                        all=True, filters={"name": self.name}
-                    )
+                    volumes = docker_client.volumes.list(filters={"name": self.name})
 
                     if volumes:
                         for volume in volumes:
