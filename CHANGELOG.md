@@ -1,5 +1,10 @@
 <!--next-version-placeholder-->
 
+## v0.5.5 (2020-11-27)
+### Fix
+* User and password ([`de5c574`](https://github.com/wearep3r/backplane/commit/de5c5744459ef6995060282500a1e5bcb26c3873))
+* Corrected volume parameters ([`77862b5`](https://github.com/wearep3r/backplane/commit/77862b5d985f9d5e0a5bb64a6f1d920ab6a82f5b))
+
 ## v0.5.4 (2020-11-27)
 ### Fix
 * Improved docs, fixed logo urls ([`ab5b4f1`](https://github.com/wearep3r/backplane/commit/ab5b4f1537f06a11755631321cde952508b03226))
