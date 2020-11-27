@@ -123,7 +123,7 @@ def init(
         # Generate password hash
         try:
             password_hash = subprocess.run(
-                ["htpasswd", "-nb", user, password], stdout=subprocess.PIPE
+                ["htpasswd", "-nbB", user, password], stdout=subprocess.PIPE
             )
             backplane_config["password_hash"] = (
                 password_hash.stdout.rstrip().decode().split(":")[1]

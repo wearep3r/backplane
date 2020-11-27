@@ -31,7 +31,9 @@ class Config:
         self.verbose: bool = False
         self.user: str = "admin"
         self.password: str = "backplane"
-        self.password_hash: str = "$apr1$gH.I91hA$YFiFb5M9K7jNsvFtEy4U70"
+        self.password_hash: str = (
+            "$2y$05$G3uDxpEVTu4J.08zkpN2Ru0r1Xaoz1V88LF47EF97BAmjlvsN3Jj6"
+        )
         self.template_url: str = "https://raw.githubusercontent.com/wearep3r/backplane/master/backplane-templates.json"
         self.ssh_public_key: str = None
         self.ssh_public_key_file: Path = Path(f"{os.getenv('HOME')}/.ssh/id_rsa.pub")

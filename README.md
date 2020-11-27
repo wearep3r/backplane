@@ -94,6 +94,40 @@ networks:
 
 Your container will be exposed as [https://whoami.mydomain.com](https://whoami.mydomain.com).
 
+## Authentication
+
+The default username for authentication with backplane services is `admin`, the default password is `backplane`.
+
+Assuming you don't want to roll with the defaults when running **backplane** on a public server, you can add `--user` and `--password` to the `init` command to specify your own values.
+
+```bash
+backplane init --https --user testuser --password testpassword
+```
+
+### Authentication for your services
+
+Traefik comes with a [BasicAuth Middleware](https://doc.traefik.io/traefik/middlewares/basicauth/) that you can use to protect your services with the username and password configured above. All you need to do is to activate the Traefik middleware for your service:
+
+```yaml
+version: "3.3"
+
+services:
+  whoami:
+    image: "traefik/whoami"
+    container_name: "whoami"
+    networks:
+      - backplane
+    labels:
+      - "backplane.enabled=true"
+      - "traefik.http.routers.whoami.middlewares=auth@docker"
+
+networks:
+  backplane:
+    external: true
+```
+
+When initalized with `--https`, authentication will be activated for Traefik and Portainer automatically.
+
 ## Deploy to backplane (Experimental)
 
 > **NOTE**: this is still WIP and subject to change. We try to provide an unopinonated wrapper around docker-compose with a few "augmentations" that is fully compatible with **standard** Docker Compose stacks. We also plan to integrate with Portainer's templating system to make installing applications even easier.
