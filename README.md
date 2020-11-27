@@ -57,19 +57,19 @@ networks:
 
 Your service will be exposed as [http://whoami.127-0-0-1.ns0.co](http://whoami.127-0-0-1.ns0.co).
 
-## Use backplane in the cloud
+## Use backplane with HTTPS
 
-**backplane** can be used on public cloud hosts, too. Use `--https` and add a mail address for LetsEncrypt on installation to enable additional security for your applications. An optional `--domain` can be set on installation (defaults to `$SERVER_IP.ns0.co`, e.g. `193-43-54-23.ns0.co` if `--https` is set).
+Use `--https` and add a mail address for LetsEncrypt on installation to enable additional security for your applications. An optional `--domain` can be set on installation (defaults to `$SERVER_IP.ns0.co`, e.g. `193-43-54-23.ns0.co` if `--https` is set).
 
 ```bash
-backplane install --https --mail letsencrypt@mydomain.com [--domain mydomain.com]
+backplane init --https --mail letsencrypt@mydomain.com [--domain mydomain.com]
 backplane up
 ```
 
 This enables the following additional features:
 
 - access your Docker Compose services as subdomains of `mydomain.com`
-- automatic SSL for your Docker Compose services through LetsEncrypt (HTTP-Validation)
+- automatic SSL for your Docker Compose services through LetsEncrypt (HTTP-Validation, so this doesn't work on your developer machine unless you deal with the necessary port-forwardings)
 - automatic HTTP to HTTPS redirect
 - sane security defaults
 
@@ -94,41 +94,150 @@ networks:
 
 Your container will be exposed as [https://whoami.mydomain.com](https://whoami.mydomain.com).
 
-## Deploy to backplane (WIP)
+## Deploy to backplane (Experimental)
 
-`git push` your code to the built-in **shipmate** for dead-simple auto-deployment of your Docker Compose services. **shipmate** deploys whatever you define in the repository's `docker-compose.yml` file and can load additional environment variables from a `.env` file.
+> **NOTE**: this is still WIP and subject to change. We try to provide an unopinonated wrapper around docker-compose with a few "augmentations" that is fully compatible with **standard** Docker Compose stacks. We also plan to integrate with Portainer's templating system to make installing applications even easier.
 
-### Update your ssh config
+**backplane** offers multiple ways to launch your applications. They all expect your application to live inside a repository (i.e. a directory). **backplane** can deploy from a plain directory or local and remote git repositories.
 
-> cat ~/.ssh/id_rsa.pub | pbcopy
+**backplane** implements a simple workflow around `docker-compose` to "install" your applications to a Docker engine it has access to. Basically **backplane** does this:
 
-Add the following to your local `~/.ssh/config` file. This allows you to reach the runner under `backplane` without further configuration.
+- load variables from `.env`
+- augment with global configuration (i.e. `BACKPLANE_DOMAIN=127-0-0-1.ns0.co`)
+- use `--build` if necessary (i.e. if there's a `build:` section in `docker-compose.yml`)
+- run `docker-compose up -d`
+
+**backplane** (as of now) does not take care of the lifecycle of the application. To interface with it, use the bundled Portainer to manage your application from a UI or fall back to standard docker/docker-compose tooling.
+
+Installed applications will be saved to your local **backplane** config (default: `~/.backplane/contexts/default/backplane.yml`).
+
+An application that can be installed with **backplane** should contain:
+
+- a `docker-compose.yml` file
+- an optional `.env` file configuring your stack
+- the application code
+- an optional `Dockerfile` to build the application (**backplane** expects the `build:` section of the `docker-compose.yml` file to be correctly configured)
+
+Here are a few examples:
+
+- [Grafana Loki](https://github.com/backplane-apps/loki)
+- [Docker Registry](https://github.com/backplane-apps/registry)
+- [backplane itself](https://github.com/wearep3r/backplane)
+
+### With the CLI
+
+**backplane** can deploy an application directly from its repository directory. Assuming your application provides the necessary files, just run the following command from within your application directory:
+
+```bash
+backplane install
+```
+
+Optional arguments:
+
+- `name`: the name of your application (translates to the `docker-compose` project, i.e. `-p NAME`); defaults to the name of the application directory (i.e. `$PWD`)
+- `path`: the path of your application; defaults to the current directory (i.e. `$PWD`)
+- `--from` (or `-f`): a git repository (directory or URL) where **backplane** can find the application; if specified, **backplane** ignores the `path` argument and tries to install the application by cloning the repository from the given source to `~/.backplane/contexts/default/apps/$NAME`, where `$NAME` equals to the `NAME` argument (if given) or defaults to the name of the git repository
+
+#### Examples
+
+**local directory, custom name**:
+
+```bash
+backplane install my-awesome-app-beta $HOME/development/my-awesome-app
+```
+
+- sets the application name to `my-awesome-app-beta`
+- installs the application from `$HOME/development/my-awesome-app`
+
+**remote git repository, default name**:
+
+```bash
+backplane install --from https://github.com/backplane-apps/registry
+```
+
+- clones `https://github.com/backplane-apps/registry` to `~/.backplane/contexts/default/apps/registry`
+- installs the application from `~/.backplane/contexts/default/apps/registry`
+
+**local git repository, default name**:
+
+```bash
+backplane install --from $HOME/development/my-awesome-app
+```
+
+- clones `$HOME/development/my-awesome-app` to `~/.backplane/contexts/default/apps/my-awesome-app`
+- installs the application from `~/.backplane/contexts/default/apps/my-awesome-app`
+
+This mechanism is used by the `backplane` service running alongside Traefik and Portainer. This service enables you to `git push` to your **backplane**. Read more about this in the next paragraph.
+
+**backplane app registry, default name**:
+
+We're building a central registry for backplane-comtatible applications on [GitHub](https://github.com/backplane-apps). Installing one of those is as easy as running:
+
+```bash
+backplane install loki
+```
+
+- clones `https://github.com/backplane-apps/loki` to `~/.backplane/contexts/default/apps/loki`
+- installs the application from `~/.backplane/contexts/default/apps/loki`
+
+Our plan is to keep these apps compatible to Portainer's templating system to make them available as one-click installations from within the Portainer UI. One issue we currently face with this is that Portainer templates are only compatible with docker-compose configuration version "2". 
+
+### With git
+
+**backplane** contains a small Git Repository service with a dead-simple CI/CD workflow for your applications. The following section explains how to push your code to a remote **backplane** where it then will be automatically built and deployed according to the workflows described in the previous sections.
+
+This might also make sense on local development machines, but is primarily meant as a method to deploy your applications to remote **backplane** hosts in a safe way. For the following parts we assume that you have a server somewhere in the internet that you have access to via SSH (public-key authentication) and you want to use **backplane** to deploy and run your Docker Compose services on that server.
+
+Let's assume our remote **backplane** has the following attributes:
+
+- ip: 1.2.3.4
+- backplane-domain: 1-2-3-4.ns0.co
+- https: enabled
+
+#### Update your ssh config
+
+> **TIP**: `cat ~/.ssh/id_rsa.pub | pbcopy` copies your SSH public key to your clipboard
+
+Add the following to your local `~/.ssh/config` file. This allows you to reach your remote **backplane** under `backplane` without further configuration.
 
 ```bash
 Host backplane
-    HostName 127.0.0.1
+    HostName 1.2.3.4
     User backplane
     Port 2222
 ```
 
-> **NOTE**: replace "HostName" with your server's IP if you're running in production
+**Wrapup**:
+
+- our remote **backplane** (on 1.2.3.4) is now available as `backplane` when connection with ssh
+- **backplane** runs on port 2222; ports ins git remote-urls can cause problems which is why we *mask* port and ip behind the `backplane` hostname
+
+> **NOTE**: replace the value of "HostName" with your server's IP or hostname. For convenience, we're using [ns0](https://ns0.co) here to provide wildcard DNS on IP basis
 
 ### Update your git remote
 
-Assuming your repository is called `whoami`, this is how you add the **backplane runner** to your git remotes:
+Assuming your application repository is called `whoami`, this is how you add your remote **backplane** to your git remotes:
 
 ```bash
 git remote add origin "git@backplane:whoami"
 ```
 
+**Wrapup**:
+
+- our previously configured remote **backplane** becomes our new git remote-url
+- we're connecting as user `git`
+- our repository on the remote it called `whoami`
+
 ### Deploy to your server
+
+> **HINT**: as you see, we're using the [Conventional Commit](https://www.conventionalcommits.org/en/v1.0.0/) format here. This will likely be a part of backplane's future roadmap in the form of automated versioning based on commits. Just FYI.
 
 ```bash
 git commit -am "feat: figured out who I am"
 git push backplane master
 ```
 
-That's it! **backplane** will build and deploy your application and expose it automatically.
+That's it! **backplane** will build and deploy your application and expose it automatically as `https://whoami.1-2-3-4.ns0.co`.
 
 ## What is backplane
 
@@ -136,7 +245,7 @@ That's it! **backplane** will build and deploy your application and expose it au
 
 - [Traefik](https://doc.traefik.io/traefik/), a very popular, cloud-native reverse-proxy
 - [Portainer](https://www.portainer.io/), a very popular management interface for Docker
-- [shipmate](#), a simple software logistics solution
+- [backplane](https://github.com/wearep3r/backplane), this software
 
 It aims to provide simple access to core prerequisites of modern app development:
 
@@ -146,7 +255,7 @@ It aims to provide simple access to core prerequisites of modern app development
 
 To develop and run modern web-based applications you need a few core ingredients, like a reverse-proxy handling request routing, a way to manage containers and a way to deploy your code. **backplane** offers this for local development as well as on production nodes in a seemless way.
 
-**shipmate** makes it easy to bypass long CI pipelines and deploy your application to a remote backplane host with ease.
+**backplane** makes it easy to bypass long CI pipelines and deploy your application to a remote backplane host with ease.
 
 **backplane** is mainly aimed at small to medium sized development teams or solo-developers that don't require complex infrastructure. Use it for rapid prototyping or simple deployment scenarios where the full weight of modern CI/CD and PaaS offerings just isn't bearable.
 
@@ -159,7 +268,7 @@ You can migrate from local development to production with a simple `git push` wh
 
 ## Advanced configuration
 
-**backplane** is only a thin wrapper around Traefik. If you require more complex routing scenarios or have more complex service setups (e.g. multiple domains per container), simply use Traefik's label-based configuration.
+**backplane** is only a thin wrapper around Traefik and Portainer. If you require more complex routing scenarios or have more complex service setups (e.g. multiple domains per container), simply use Traefik's label-based configuration.
 
 [Read more](https://doc.traefik.io/traefik/) in the docs.
 
@@ -170,7 +279,6 @@ You can migrate from local development to production with a simple `git push` wh
 ```yaml
 labels:
   - backplane.enabled=true
-  - "traefik.http.routers.custom.service=custom-http"
   - "traefik.http.services.custom-http.loadbalancer.server.port=9000"
 ```
 
@@ -178,7 +286,7 @@ labels:
 
 In the [examples](examples) directory you'll find examples showing how to integrate backplane with your existing services
 
-Change to any of the example folders and run `docker-compose up`. The example's `README` will hold additional information on how to use it.
+Change to any of the example folders and run `backplane install`. The example's `README` will hold additional information on how to use it.
 
 ## Development
 

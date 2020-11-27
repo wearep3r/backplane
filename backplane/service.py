@@ -264,8 +264,12 @@ class Service:
         if self.container:
             if self.container.attrs["State"]["Status"] == "running":
                 message_status = typer.style("running", fg=typer.colors.GREEN, bold=True)
-                url_prefix = "https://" if self.config.https else "http://"
-                message_info = typer.style(f" ({url_prefix}{self.url})")
+
+                if self.name != "backplane":
+                    url_prefix = "https://" if self.config.https else "http://"
+                    message_info = typer.style(f" ({url_prefix}{self.url})")
+                else:
+                    message_info = ""
             elif self.container.attrs["State"]["Status"] == "starting":
                 message_status = typer.style(
                     "starting", fg=typer.colors.WHITE, bg=typer.colors.BLUE
@@ -348,8 +352,15 @@ class Service:
                     # Remove volumes
                     docker_client = docker.from_env()
 
-                    volume = docker_client.volumes.get(f"{self.name}-data")
-                    volume.remove(force=True)
+                    volumes = docker_client.volumes.list(
+                        all=True, filters={"name": self.name}
+                    )
+
+                    if volumes:
+                        for volume in volumes:
+                            if volume.attrs["Name"].strip("/") == f"{self.name}-data":
+                                # volume = docker_client.volumes.get(f"{self.name}-data")
+                                volume.remove(force=True)
             except Exception as e:
                 raise CannotRemoveService(
                     f"Unable to remove container for service {self.name}: {e}"

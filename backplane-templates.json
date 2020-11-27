@@ -3,7 +3,8 @@
 	"templates": [
 		{
 			"type": 3,
-			"title": "Registry",
+            "title": "Registry",
+            "name": "registry",
 			"description": "Docker registry with pull-through cache",
 			"note": "Deploys Docker registry with pull-through cache.",
 			"categories": [
@@ -13,7 +14,7 @@
                 "backplane"
 			],
 			"platform": "linux",
-			"logo": "https://portainer-io-assets.sfo2.digitaloceanspaces.com/logos/wordpress.png",
+			"logo": "https://www.docker.com/sites/default/files/d8/styles/role_icon/public/2019-07/Moby-logo.png?itok=sYH_JEaJ",
 			"repository": {
 				"url": "https://github.com/backplane-apps/registry",
 				"stackfile": "docker-compose.yml"
@@ -21,7 +22,8 @@
         },
         {
 			"type": 3,
-			"title": "Registry",
+            "title": "Loki",
+            "name": "loki",
 			"description": "Grafana Loki",
 			"note": "Deploys Grafana Loki.",
 			"categories": [
@@ -30,7 +32,7 @@
                 "backplane"
 			],
 			"platform": "linux",
-			"logo": "https://portainer-io-assets.sfo2.digitaloceanspaces.com/logos/wordpress.png",
+			"logo": "https://grafana.com/docs/loki/latest/logo_and_name.png",
 			"repository": {
 				"url": "https://github.com/backplane-apps/loki",
 				"stackfile": "docker-compose.yml"
