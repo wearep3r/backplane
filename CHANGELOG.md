@@ -1,5 +1,9 @@
 <!--next-version-placeholder-->
 
+## v0.5.3 (2020-11-27)
+### Fix
+* Updated templates ([`480c685`](https://github.com/wearep3r/backplane/commit/480c6852e82b790357715b0fc11e7bc32624438f))
+
 ## v0.5.2 (2020-11-24)
 ### Fix
 * Updated templates ([`90361d1`](https://github.com/wearep3r/backplane/commit/90361d10aa1c658feb1c717924152630b446592a))
