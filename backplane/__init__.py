@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-__version__ = "0.6.2"
+__version__ = "0.6.3"
 
 __author__ = "Fabian Peter <fabian@p3r.link>"
 __copyright__ = "Copyright 2020, Fabian Peter"

@@ -1,5 +1,9 @@
 <!--next-version-placeholder-->
 
+## v0.6.3 (2020-11-29)
+### Fix
+* Restart policy is now 'always' ([`d7c2449`](https://github.com/wearep3r/backplane/commit/d7c24497f870c85ee4a3cf4c5099da8852d93a7e))
+
 ## v0.6.2 (2020-11-29)
 ### Fix
 * Dependencies ([`a498586`](https://github.com/wearep3r/backplane/commit/a498586c96fa24e4e1703eeeffd91240ae419d5f))
