@@ -1,5 +1,9 @@
 <!--next-version-placeholder-->
 
+## v0.6.1 (2020-11-29)
+### Fix
+* Rework installation logic ([`e0e8589`](https://github.com/wearep3r/backplane/commit/e0e8589ed9ed15790073c04e85ec75bae87ff5f1))
+
 ## v0.6.0 (2020-11-29)
 ### Feature
 * Added compose-file option to install ([`9a9a153`](https://github.com/wearep3r/backplane/commit/9a9a153df87134870a405ad4d37690518d74b1a1))
