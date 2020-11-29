@@ -14,7 +14,7 @@ from backplane.service import Service
 from backplane.errors import ConfigNotFound, CannotStartService
 from requests import get
 import subprocess
-
+from git.repo.base import Repo
 
 # Linux
 # ('Linux', '5.4.0-52-generic', '#57-Ubuntu SMP Thu Oct 15 10:57:00 UTC 2020')
@@ -310,21 +310,44 @@ def install(
 
     # Check if an app has been named to be taken from the app registry
     if registry_app:
+        app_name = name if name else registry_app
+        app_destination = os.path.join(conf.app_dir, app_name)
+
         try:
-            # Set name if given or default to app name
-            name = name if name else registry_app
             backplane_app = App(
                 compose_file=compose_file,
                 config=conf,
-                destination=destination,
-                name=name,
+                destination=app_destination,
+                name=app_name,
                 registry_app=registry_app,
-                source=source,
+                source="registry",
             )
             backplane_app.install()
         except Exception as e:
             typer.secho(
                 f"Failed to install {name} from {path}: {e}",
+                err=True,
+                fg=typer.colors.RED,
+            )
+    elif source and not destination:
+        app_name = utils.get_repo_name_from_url(source)
+        app_destination = os.path.join(conf.app_dir, app_name)
+
+        # Specified a source but no destination
+        # set destination to app_dir/app_name
+        try:
+            backplane_app = App(
+                compose_file=compose_file,
+                config=conf,
+                destination=app_destination,
+                name=app_name,
+                registry_app=registry_app,
+                source=app_source,
+            )
+            backplane_app.install()
+        except Exception as e:
+            typer.secho(
+                f"Failed to install {name} from {destination}: {e}",
                 err=True,
                 fg=typer.colors.RED,
             )

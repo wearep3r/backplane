@@ -74,21 +74,21 @@ class App:
                         err=False,
                         fg=typer.colors.BRIGHT_BLACK,
                     )
-                    self.source = self.config.apps[self.name]["source"]
-                    self.destination = self.config.apps[self.name]["destination"]
-                    if self.config.verbose > 0:
-                        typer.secho(
-                            f"App source from config: {self.source}",
-                            err=False,
-                            fg=typer.colors.BRIGHT_BLACK,
-                        )
-                else:
-                    # We will install it from the registry
-                    # Set source
-                    self.source = f"{self.config.appstore_url}/{self.name}"
+                self.source = self.config.apps[self.name]["source"]
+                self.destination = self.config.apps[self.name]["destination"]
+                if self.config.verbose > 0:
+                    typer.secho(
+                        f"App source from config: {self.source}",
+                        err=False,
+                        fg=typer.colors.BRIGHT_BLACK,
+                    )
+            else:
+                # We will install it from the registry
+                # Set source
+                self.source = f"{self.config.appstore_url}/{self.name}"
 
-                    # Set destination: ~/.backplane/contexts/defaults/{self.name}
-                    self.destination = os.path.join(self.config.app_dir, self.name)
+                # Set destination: ~/.backplane/contexts/defaults/{self.name}
+                self.destination = os.path.join(self.config.app_dir, self.name)
 
         if self.source != self.destination:
             # Loading app from external source
@@ -99,13 +99,13 @@ class App:
             try:
                 # Check if app already exists
                 if os.path.exists(app_path):
-                    print(f"found existing app in {app_path}")
+                    typer.echo(f"found existing app in {app_path}")
 
                     # Change to app_dir
                     os.chdir(app_path)
 
                     # Pull
-                    print(f"pulling updates from {self.source}")
+                    typer.echo(f"pulling updates from {self.source}")
                     repo = Repo(app_path)
                     assert repo.__class__ is Repo
 
@@ -114,8 +114,11 @@ class App:
                     # Return to previous directory
                     os.chdir(cwd)
                 else:
-                    print(f"cloning from {self.source}")
-                    repo = Repo.clone_from(self.source, app_path)
+                    typer.echo(f"cloning from {self.source}")
+                    try:
+                        repo = Repo.clone_from(self.source, app_path)
+                    except Exception as e:
+                        raise CannotInstallApp(f"Failed to clone from {self.source}: {e}")
                 assert repo.__class__ is Repo
 
                 # Set app path
@@ -265,20 +268,22 @@ class App:
 
             service_config = app_config["services"][service]
 
-            for label in service_config["labels"]:
-                key, value = label.split("=")
+            if "labels" in service_config:
 
-                if key == "backplane.enabled":
-                    if value == "true":
-                        if self.config.verbose > 0:
-                            typer.secho(
-                                f"backplane enabled for service {service_name}",
-                                err=False,
-                                fg=typer.colors.BRIGHT_BLACK,
+                for label in service_config["labels"]:
+                    key, value = label.split("=")
+
+                    if key == "backplane.enabled":
+                        if value == "true":
+                            if self.config.verbose > 0:
+                                typer.secho(
+                                    f"backplane enabled for service {service_name}",
+                                    err=False,
+                                    fg=typer.colors.BRIGHT_BLACK,
+                                )
+                            app_urls.append(
+                                f"{protocol}://{service_name}.{self.config.domain}"
                             )
-                        app_urls.append(
-                            f"{protocol}://{service_name}.{self.config.domain}"
-                        )
 
         return app_urls
 

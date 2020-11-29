@@ -47,6 +47,6 @@ echo ""
 # TODO: accept and deploy CI builds
 #swarmlet deploy "$REPO_DEST" || exit 1
 
-/usr/local/bin/backplane install "$REPO_NAME" --from "$REPO_SRC" || exit 1
+/usr/local/bin/backplane install --name "$REPO_NAME" --from "$REPO_SRC" || exit 1
 
 exit 0

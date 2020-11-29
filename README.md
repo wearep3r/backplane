@@ -168,16 +168,18 @@ backplane install
 
 Optional arguments:
 
-- `name`: the name of your application (translates to the `docker-compose` project, i.e. `-p NAME`); defaults to the name of the application directory (i.e. `$PWD`)
-- `path`: the path of your application; defaults to the current directory (i.e. `$PWD`)
-- `--from` (or `-f`): a git repository (directory or URL) where **backplane** can find the application; if specified, **backplane** ignores the `path` argument and tries to install the application by cloning the repository from the given source to `~/.backplane/contexts/default/apps/$NAME`, where `$NAME` equals to the `NAME` argument (if given) or defaults to the name of the git repository
+- `--name`: the name of your application (translates to the `docker-compose` project, i.e. `-p NAME`); defaults to the name of the application directory (i.e. `$PWD`)
+- `--to` (or `-t`): the destination path of your application; defaults to the current directory (i.e. `$PWD`)
+- `--from` (or `-f`): a git repository, directory or URL where **backplane** can find the application; defaults to the current directory
+- `--compose-file` (or `-c`): the compose file to be used for installation (defaults to `docker-compose.yml`)
+- `app name`: if specified, **backplane** ignores the `path` argument and tries to install the application by cloning the repository from the given source to `~/.backplane/contexts/default/apps/$NAME`, where `$NAME` equals to the `NAME` argument (if given) or defaults to the name of the git repository
 
 #### Examples
 
 **local directory, custom name**:
 
 ```bash
-backplane install my-awesome-app-beta $HOME/development/my-awesome-app
+backplane install --name my-awesome-app-beta --from $HOME/development/my-awesome-app
 ```
 
 - sets the application name to `my-awesome-app-beta`
