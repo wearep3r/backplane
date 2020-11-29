@@ -211,6 +211,7 @@ def up(
 
         try:
             if restart:
+                s.stop()
                 s.remove()
 
             s.start()

@@ -347,6 +347,7 @@ class Service:
             try:
                 self.stop()
                 self.container.remove()
+                self.container = None
 
                 if prune:
                     # Remove volumes
@@ -359,6 +360,7 @@ class Service:
                             if volume.attrs["Name"].strip("/") == f"{self.name}-data":
                                 # volume = docker_client.volumes.get(f"{self.name}-data")
                                 volume.remove(force=True)
+
             except Exception as e:
                 raise CannotRemoveService(
                     f"Unable to remove container for service {self.name}: {e}"
