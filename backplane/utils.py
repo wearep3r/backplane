@@ -46,9 +46,9 @@ def createNetwork(network: str):
     backplane_network_exists = False
 
     try:
-        print(os.getenv("DOCKER_HOST"))
+
         docker_client = docker.from_env()
-        print(docker_client)
+
         docker_networks = docker_client.networks.list(names=network)
 
         for docker_network in docker_networks:
