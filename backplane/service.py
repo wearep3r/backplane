@@ -76,7 +76,7 @@ class Service:
                 "name": "traefik",
                 "network": "backplane",
                 "ports": {"80/tcp": 80},
-                "restart_policy": {"Name": "always", "MaximumRetryCount": 5},
+                "restart_policy": {"Name": "unless-stopped"},
                 "volumes": {
                     "traefik-data": {"bind": "/letsencrypt", "mode": "rw"},
                     "/var/run/docker.sock": {
@@ -166,7 +166,7 @@ class Service:
                 },
                 "name": "portainer",
                 "network": "backplane",
-                "restart_policy": {"Name": "always", "MaximumRetryCount": 5},
+                "restart_policy": {"Name": "unless-stopped"},
                 "volumes": {
                     "portainer-data": {"bind": "/data", "mode": "rw"},
                     "/var/run/docker.sock": {
@@ -205,7 +205,7 @@ class Service:
                     "BACKPLANE_DOMAIN": self.config.domain,
                     "BACKPLANE_MAIL": self.config.mail,
                 },
-                "restart_policy": {"Name": "always", "MaximumRetryCount": 5},
+                "restart_policy": {"Name": "unless-stopped"},
                 "volumes": {
                     f"{os.path.join(os.getenv('HOME'),'.ssh')}": {
                         "bind": "/backplane/.ssh",

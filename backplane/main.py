@@ -275,6 +275,8 @@ def down(
 
             if prune:
                 s.remove(prune=True)
+            else:
+                s.remove()
 
             s.echo()
         except Exception as e:
