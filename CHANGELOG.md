@@ -1,5 +1,9 @@
 <!--next-version-placeholder-->
 
+## v0.6.0 (2020-11-29)
+### Feature
+* Added compose-file option to install ([`9a9a153`](https://github.com/wearep3r/backplane/commit/9a9a153df87134870a405ad4d37690518d74b1a1))
+
 ## v0.5.5 (2020-11-27)
 ### Fix
 * User and password ([`de5c574`](https://github.com/wearep3r/backplane/commit/de5c5744459ef6995060282500a1e5bcb26c3873))
