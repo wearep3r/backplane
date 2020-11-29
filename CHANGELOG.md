@@ -1,5 +1,9 @@
 <!--next-version-placeholder-->
 
+## v0.7.0 (2020-11-29)
+### Feature
+* Added Makefile ([`443efd6`](https://github.com/wearep3r/backplane/commit/443efd6bbe5161be19fc1151c6be7ce875922f9b))
+
 ## v0.6.4 (2020-11-29)
 ### Fix
 * Corrected restart logic ([`6b0ca81`](https://github.com/wearep3r/backplane/commit/6b0ca81d2583b2bdad77ce967ff6fe9b6e019756))
