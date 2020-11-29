@@ -1,5 +1,9 @@
 <!--next-version-placeholder-->
 
+## v0.7.4 (2020-11-29)
+### Fix
+* Set defualt for options ([`ac7df6e`](https://github.com/wearep3r/backplane/commit/ac7df6ea28d1570242e138c67575c45e06cb2927))
+
 ## v0.7.3 (2020-11-29)
 ### Fix
 * Options ([`6475e3d`](https://github.com/wearep3r/backplane/commit/6475e3d8fa61c4227700a939224520113988df9d))
