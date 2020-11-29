@@ -1,5 +1,9 @@
 <!--next-version-placeholder-->
 
+## v0.7.1 (2020-11-29)
+### Fix
+* Updated README ([`a1da524`](https://github.com/wearep3r/backplane/commit/a1da52428b62b01702c34fc4f96576bc45c770ea))
+
 ## v0.7.0 (2020-11-29)
 ### Feature
 * Added Makefile ([`443efd6`](https://github.com/wearep3r/backplane/commit/443efd6bbe5161be19fc1151c6be7ce875922f9b))
