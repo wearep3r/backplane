@@ -209,8 +209,8 @@ class Service:
                 "restart_policy": {"Name": "unless-stopped"},
                 "volumes": {
                     f"{os.path.join(os.getenv('HOME'),'.ssh')}": {
-                        "bind": "/backplane/.ssh",
-                        "mode": "rw",
+                        "bind": "/ssh",
+                        "mode": "r",
                     },
                     "backplane-repositories": {
                         "bind": "/backplane/repositories",

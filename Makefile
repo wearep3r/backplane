@@ -19,16 +19,18 @@ endif
 help:
 >	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-.PHONY: build
-build:
-#> @docker image prune -f
-> @docker build --build-arg BUILD_DATE=$(shell date -u +'%Y-%m-%dT%H:%M:%SZ') --build-arg BUILD_VERSION=$(shell backplane --version) --build-arg VCS_REF=$(shell git rev-parse --short HEAD) -t wearep3r/backplane .
-
-.PHONY: publish
-publish:
+.PHONY: publish-sem-rel
+publish-sem-rel:
 > git push origin master
 > semantic-release publish
+
+.PHONY: build-docker
+build-docker:
+#> @docker image prune -f
 > docker build --build-arg BUILD_DATE=$(shell date -u +'%Y-%m-%dT%H:%M:%SZ') --build-arg BUILD_VERSION=$(shell backplane --version) --build-arg VCS_REF=$(shell git rev-parse --short HEAD) -t wearep3r/backplane .
+
+.PHONY: publish
+publish: publish-sem-rel build-docker
 > docker tag wearep3r/backplane wearep3r/backplane:$(shell backplane --version)
 > docker push wearep3r/backplane:$(shell backplane --version)
 > docker tag wearep3r/backplane wearep3r/backplane:latest

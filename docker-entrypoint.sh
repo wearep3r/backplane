@@ -5,6 +5,14 @@ DOCKER_SOCKET=/var/run/docker.sock
 DOCKER_GROUP=docker
 BUILD_USER=git
 
+# Copy /ssh to /backplane/.ssh and chown to git
+if [ -f "/ssh/authorized_keys" ];
+then
+  echo "Copying authorized_keys to /backplane/.ssh/authorized_keys. Run 'backplane up -r backplane' to load new keys."
+  cp -r /ssh/authorized_keys /backplane/.ssh/authorized_keys
+  chown git:root /backplane/.ssh/authorized_keys
+fi
+
 echo "Adding hosts GID to docker system group"
 
 if [ -S ${DOCKER_SOCKET} ]; then
