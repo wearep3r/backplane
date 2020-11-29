@@ -4,7 +4,7 @@ import typer
 import os
 from shutil import which
 import sys
-from typing import Optional
+from typing import Optional, List
 from pathlib import Path
 from read_version import read_version
 from backplane import utils
@@ -291,6 +291,7 @@ def install(
     name: str = typer.Argument(os.path.basename(os.getcwd())),
     path: Path = typer.Argument(os.getcwd()),
     source: str = typer.Option(None, "--from", "-f"),
+    compose_file: str = typer.Option("docker-compose.yml", "--compose-file", "-c"),
 ):
     """
     Install an app into backplane.
@@ -303,7 +304,7 @@ def install(
             fg=typer.colors.BRIGHT_BLACK,
         )
 
-    app = App(name=name, path=path, source=source, config=conf)
+    app = App(name=name, path=path, source=source, config=conf, compose_file=compose_file)
     try:
         app.install()
     except Exception as e:

@@ -1,5 +1,6 @@
 import os
 import validators
+from typing import List, Optional
 from pathlib import Path, PosixPath
 import anyconfig
 from git.repo.base import Repo
@@ -35,6 +36,7 @@ class App:
         path: Path,
         config: Config = None,
         source: str = None,
+        compose_file: Optional[List[str]] = None,
     ):
         if config:
             self.config = config
@@ -47,6 +49,7 @@ class App:
         self.name: str = name
         self.path: Path = path
         self.source: str = source
+        self.compose_file: str = compose_file
 
     def install(self):
         if not self.path.exists():
@@ -152,7 +155,8 @@ class App:
                 install_command.append("--env-file")
                 install_command.append(str(env_file))
 
-            compose_file = os.path.join(self.path, "docker-compose.yml")
+            # Check existence of compose files
+            compose_file = os.path.join(self.path, self.compose_file)
             app_config = {}
             if os.path.exists(compose_file):
                 install_command.append("-f")
