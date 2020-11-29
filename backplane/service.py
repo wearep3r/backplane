@@ -231,9 +231,10 @@ class Service:
 
         # Rewrite https config
         if self.config.https:
-            if self.options and "https" in self.options:
-                for key in self.options["https"].keys():
-                    self.attrs[key] = self.options["https"][key]
+            if self.options:
+                if "https" in self.options:
+                    for key in self.options["https"].keys():
+                        self.attrs[key] = self.options["https"][key]
 
     def _status(self):
         docker_client = docker.from_env()
