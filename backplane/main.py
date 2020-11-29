@@ -288,9 +288,10 @@ def down(
 
 @app.command()
 def install(
-    name: str = typer.Argument(os.path.basename(os.getcwd())),
-    path: Path = typer.Argument(os.getcwd()),
+    registry_app: str = typer.Argument(None),
+    name: str = typer.Option(None, "--name", "-n"),
     source: str = typer.Option(None, "--from", "-f"),
+    destination: Path = typer.Option(None, "--to", "-t"),
     compose_file: str = typer.Option("docker-compose.yml", "--compose-file", "-c"),
 ):
     """
@@ -299,20 +300,52 @@ def install(
 
     if conf.verbose > 0:
         typer.secho(
-            f"Installing {name} from {path}",
+            f"Installing {name} from {destination}",
             err=False,
             fg=typer.colors.BRIGHT_BLACK,
         )
+    app_name = name if name else os.path.basename(os.getcwd())
+    app_source = source if source else os.getcwd()
+    app_destination = destination if destination else os.getcwd()
 
-    app = App(name=name, path=path, source=source, config=conf, compose_file=compose_file)
-    try:
-        app.install()
-    except Exception as e:
-        typer.secho(
-            f"Failed to install {name} from {path}: {e}",
-            err=True,
-            fg=typer.colors.RED,
-        )
+    # Check if an app has been named to be taken from the app registry
+    if registry_app:
+        try:
+            # Set name if given or default to app name
+            name = name if name else registry_app
+            backplane_app = App(
+                compose_file=compose_file,
+                config=conf,
+                destination=destination,
+                name=name,
+                registry_app=registry_app,
+                source=source,
+            )
+            backplane_app.install()
+        except Exception as e:
+            typer.secho(
+                f"Failed to install {name} from {path}: {e}",
+                err=True,
+                fg=typer.colors.RED,
+            )
+    else:
+        try:
+            # Set name if given or default to app name
+            backplane_app = App(
+                compose_file=compose_file,
+                config=conf,
+                destination=app_destination,
+                name=app_name,
+                registry_app=registry_app,
+                source=app_source,
+            )
+            backplane_app.install()
+        except Exception as e:
+            typer.secho(
+                f"Failed to install {name} from {destination}: {e}",
+                err=True,
+                fg=typer.colors.RED,
+            )
 
 
 @app.command()
