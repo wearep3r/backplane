@@ -24,6 +24,7 @@ class Service:
         self.start_timeout = 90
 
         self.container = None
+        self.options = None
 
         self.populateConfig()
 
