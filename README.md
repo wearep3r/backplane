@@ -345,7 +345,7 @@ poetry build
 #### Build Docker
 
 ```bash
-docker build -t wearep3r/backplane .
+docker build --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') --build-arg BUILD_VERSION=$(backplane --version) --build-arg VCS_REF=$(git rev-parse --short HEAD) -t wearep3r/backplane .
 docker tag wearep3r/backplane wearep3r/backplane:$(backplane --version)
 docker push wearep3r/backplane:$(backplane --version)
 docker tag wearep3r/backplane wearep3r/backplane:latest
