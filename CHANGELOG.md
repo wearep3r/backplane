@@ -1,5 +1,10 @@
 <!--next-version-placeholder-->
 
+## v0.6.2 (2020-11-29)
+### Fix
+* Dependencies ([`a498586`](https://github.com/wearep3r/backplane/commit/a498586c96fa24e4e1703eeeffd91240ae419d5f))
+* Installation routines ([`f40b9bc`](https://github.com/wearep3r/backplane/commit/f40b9bc77e460fbf1948a5bef7b3713439bd6776))
+
 ## v0.6.1 (2020-11-29)
 ### Fix
 * Rework installation logic ([`e0e8589`](https://github.com/wearep3r/backplane/commit/e0e8589ed9ed15790073c04e85ec75bae87ff5f1))
