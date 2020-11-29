@@ -1,5 +1,9 @@
 <!--next-version-placeholder-->
 
+## v0.7.2 (2020-11-29)
+### Fix
+* Missing https options ([`737c42a`](https://github.com/wearep3r/backplane/commit/737c42a96c590ff02817cbe5ba448adcfb5ad3b5))
+
 ## v0.7.1 (2020-11-29)
 ### Fix
 * Updated README ([`a1da524`](https://github.com/wearep3r/backplane/commit/a1da52428b62b01702c34fc4f96576bc45c770ea))
