@@ -3,9 +3,9 @@
   <h1 align="left">backplane</h1>
 </div>
 
-**[Website](https://backplane.sh)** — **[Documentation](https://backplane.sh/docs)** — **[Source Code](https://github.com/wearep3r/backplane)**
+**[Website](https://backplane.sh)** — **[Documentation](https://github.com/wearep3r/backplane)** — **[Source Code](https://github.com/wearep3r/backplane)**
 
-A dead-simple backplane for your Docker Compose services - with free SSL and Git-based continuous delivery. Run any Docker app [manually](examples/) or from [backplane's app-store](http://portainer.127-0-0-1.ns0.co/#!/1/docker/templates) in no time.
+A batteries-included launchpad for your Docker Compose services - with free SSL and Git-based continuous delivery. Run any Docker app [manually](examples/) or from [backplane's app-store](https://github.com/backplane-apps) in no time.
 
 [!["Version"](https://img.shields.io/github/v/tag/wearep3r/backplane?label=version)](https://github.com/wearep3r/backplane)
 [!["p3r. Slack"](https://img.shields.io/badge/slack-@wearep3r/general-purple.svg?logo=slack&label=Slack)](https://join.slack.com/t/wearep3r/shared_invite/zt-d9ao21f9-pb70o46~82P~gxDTNy_JWw)

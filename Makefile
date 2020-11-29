@@ -21,12 +21,11 @@ help:
 
 .PHONY: build
 build:
-> @poetry build
 #> @docker image prune -f
 > @docker build --build-arg BUILD_DATE=$(shell date -u +'%Y-%m-%dT%H:%M:%SZ') --build-arg BUILD_VERSION=$(shell backplane --version) --build-arg VCS_REF=$(shell git rev-parse --short HEAD) -t wearep3r/backplane .
 
 .PHONY: publish
-publish:
+publish: build
 > @git push origin master
 > @semantic-release publish
 > @docker tag wearep3r/backplane wearep3r/backplane:$(shell backplane --version)
