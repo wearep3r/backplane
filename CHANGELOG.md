@@ -1,5 +1,10 @@
 <!--next-version-placeholder-->
 
+## v0.6.4 (2020-11-29)
+### Fix
+* Corrected restart logic ([`6b0ca81`](https://github.com/wearep3r/backplane/commit/6b0ca81d2583b2bdad77ce967ff6fe9b6e019756))
+* Down command now removes the container every time ([`bdc861d`](https://github.com/wearep3r/backplane/commit/bdc861d5c78febd5a72299972568e81b3d4cf742))
+
 ## v0.6.3 (2020-11-29)
 ### Fix
 * Restart policy is now 'always' ([`d7c2449`](https://github.com/wearep3r/backplane/commit/d7c24497f870c85ee4a3cf4c5099da8852d93a7e))
