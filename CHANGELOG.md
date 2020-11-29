@@ -1,5 +1,9 @@
 <!--next-version-placeholder-->
 
+## v0.7.5 (2020-11-29)
+### Fix
+* Volume mounts ([`fe69259`](https://github.com/wearep3r/backplane/commit/fe6925961c3a9f23b7c9eb9a9e546076c32f2b95))
+
 ## v0.7.4 (2020-11-29)
 ### Fix
 * Set defualt for options ([`ac7df6e`](https://github.com/wearep3r/backplane/commit/ac7df6ea28d1570242e138c67575c45e06cb2927))
