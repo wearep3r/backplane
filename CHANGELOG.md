@@ -1,5 +1,9 @@
 <!--next-version-placeholder-->
 
+## v0.8.0 (2020-12-04)
+### Feature
+* Added utilities ([`6287bf7`](https://github.com/wearep3r/backplane/commit/6287bf790b2ed38108406e83ed4438f9e32ac94f))
+
 ## v0.7.5 (2020-11-29)
 ### Fix
 * Volume mounts ([`fe69259`](https://github.com/wearep3r/backplane/commit/fe6925961c3a9f23b7c9eb9a9e546076c32f2b95))
