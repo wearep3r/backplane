@@ -13,8 +13,6 @@ then
   chown git:root /backplane/.ssh/authorized_keys
 fi
 
-echo "Adding hosts GID to docker system group"
-
 if [ -S ${DOCKER_SOCKET} ]; then
     DOCKER_GID=$(stat -c '%g' ${DOCKER_SOCKET})
 
@@ -22,11 +20,16 @@ if [ -S ${DOCKER_SOCKET} ]; then
 
     if [ "$GROUP_NAME" != "" ];
     then
-      echo "Group $GROUP_NAME exists. Adding user ..."
-      addgroup  ${BUILD_USER} ${GROUP_NAME} || true
+      USER_IN_GROUP=$(getent group $GROUP_NAME | grep "${BUILD_USER}")
+      if [ ! $USER_IN_GROUP ];
+      then
+        echo "Group $GROUP_NAME exists. Adding user $BUILD_USER"
+        addgroup  ${BUILD_USER} ${GROUP_NAME} || true
+      fi
     else
-      addgroup --system --gid ${DOCKER_GID} ${DOCKER_GROUP} || true
-      addgroup  ${BUILD_USER} ${DOCKER_GROUP} || true
+      echo "Adding group $GROUP_NAME. Adding user $BUILD_USER"
+      addgroup --system --gid ${DOCKER_GID} ${GROUP_NAME} || true
+      addgroup  ${BUILD_USER} ${GROUP_NAME} || true
     fi
 fi
 

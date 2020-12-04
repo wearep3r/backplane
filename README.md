@@ -203,7 +203,7 @@ backplane install --from $HOME/development/my-awesome-app
 - clones `$HOME/development/my-awesome-app` to `~/.backplane/contexts/default/apps/my-awesome-app`
 - installs the application from `~/.backplane/contexts/default/apps/my-awesome-app`
 
-This mechanism is used by the `backplane` service running alongside Traefik and Portainer. This service enables you to `git push` to your **backplane**. Read more about this in the next paragraph.
+This mechanism is used by the `backplane` service running alongside Traefik and Portainer. This service enables you to `git push` to your **backplane**. Read more about this in the next section.
 
 **backplane app registry, default name**:
 
@@ -350,6 +350,15 @@ docker tag wearep3r/backplane wearep3r/backplane:$(backplane --version)
 docker push wearep3r/backplane:$(backplane --version)
 docker tag wearep3r/backplane wearep3r/backplane:latest
 docker push wearep3r/backplane:latest
+```
+
+#### Multi-Arch
+
+```bash
+docker buildx ls
+docker buildx create --name wearep3r --use
+docker buildx inspect --bootstrap
+docker buildx build --platform linux/amd64,linux/arm64
 ```
 
 ### Generate release
