@@ -210,7 +210,7 @@ class Service:
                 "volumes": {
                     f"{os.path.join(os.getenv('HOME'),'.ssh')}": {
                         "bind": "/ssh",
-                        "mode": "r",
+                        "mode": "ro",
                     },
                     "backplane-repositories": {
                         "bind": "/backplane/repositories",

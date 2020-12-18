@@ -87,7 +87,7 @@ ARG BUILD_VERSION
  
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
  
-CMD tail -f /dev/null
+CMD ["/bin/bash", "-c"]
 
 LABEL org.label-schema.schema-version="1.0"
 LABEL org.label-schema.build-date=$BUILD_DATE

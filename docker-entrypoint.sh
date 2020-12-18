@@ -1,5 +1,3 @@
-#!/bin/bash
-set -e
 
 DOCKER_SOCKET=/var/run/docker.sock
 DOCKER_GROUP=docker
