@@ -1,5 +1,9 @@
 <!--next-version-placeholder-->
 
+## v0.8.1 (2020-12-18)
+### Fix
+* Invalid mode for docker volume ([`12f78e3`](https://github.com/wearep3r/backplane/commit/12f78e3936dcbcf0bce1794b991c33a3d67791fe))
+
 ## v0.8.0 (2020-12-04)
 ### Feature
 * Added utilities ([`6287bf7`](https://github.com/wearep3r/backplane/commit/6287bf790b2ed38108406e83ed4438f9e32ac94f))
