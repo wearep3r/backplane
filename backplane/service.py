@@ -166,6 +166,7 @@ class Service:
                     "traefik.http.services.portainer.loadbalancer.server.port": "9000",
                 },
                 "name": "portainer",
+                "ports": {"8000/tcp": 8000},
                 "network": "backplane",
                 "restart_policy": {"Name": "unless-stopped"},
                 "volumes": {
