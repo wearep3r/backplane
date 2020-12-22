@@ -1,5 +1,9 @@
 <!--next-version-placeholder-->
 
+## v0.9.0 (2020-12-22)
+### Feature
+* Added port 8000 for portainer agent ([`a13f865`](https://github.com/wearep3r/backplane/commit/a13f865492382a38aae57d46892a4063eec8f883))
+
 ## v0.8.1 (2020-12-18)
 ### Fix
 * Invalid mode for docker volume ([`12f78e3`](https://github.com/wearep3r/backplane/commit/12f78e3936dcbcf0bce1794b991c33a3d67791fe))
